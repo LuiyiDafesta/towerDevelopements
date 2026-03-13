@@ -14,7 +14,63 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      properties: {
+        Row: {
+          amenities: string[] | null
+          bathrooms: number | null
+          bedrooms: number | null
+          created_at: string
+          description: string | null
+          featured: boolean | null
+          id: string
+          images: string[] | null
+          location: string
+          neighborhood: string | null
+          parking: number | null
+          price: number
+          project_name: string | null
+          square_meters: number | null
+          status: Database["public"]["Enums"]["property_status"] | null
+          title: string
+        }
+        Insert: {
+          amenities?: string[] | null
+          bathrooms?: number | null
+          bedrooms?: number | null
+          created_at?: string
+          description?: string | null
+          featured?: boolean | null
+          id?: string
+          images?: string[] | null
+          location: string
+          neighborhood?: string | null
+          parking?: number | null
+          price: number
+          project_name?: string | null
+          square_meters?: number | null
+          status?: Database["public"]["Enums"]["property_status"] | null
+          title: string
+        }
+        Update: {
+          amenities?: string[] | null
+          bathrooms?: number | null
+          bedrooms?: number | null
+          created_at?: string
+          description?: string | null
+          featured?: boolean | null
+          id?: string
+          images?: string[] | null
+          location?: string
+          neighborhood?: string | null
+          parking?: number | null
+          price?: number
+          project_name?: string | null
+          square_meters?: number | null
+          status?: Database["public"]["Enums"]["property_status"] | null
+          title?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +79,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      property_status: "disponible" | "reservado" | "vendido"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +206,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      property_status: ["disponible", "reservado", "vendido"],
+    },
   },
 } as const

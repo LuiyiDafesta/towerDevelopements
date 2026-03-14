@@ -1,27 +1,24 @@
 # INSTRUCCIONES DE DESPLIEGUE (FEROZO)
 
+> [!CAUTION]
+> **REGLA DE ORO:** Siempre que realices un cambio en `_source/`, **DEBES** ejecutar `npm run build` para actualizar la raíz del proyecto **ANTES** de subir los cambios a GitHub. El repositorio siempre debe tener la última versión de producción en la raíz.
+
 > [!IMPORTANT]
 > **NO SUBIR LA CARPETA `_source` AL HOSTING.**
 > El código fuente vive en `_source/`, pero el sitio web compilado vive en la **RAÍZ** del proyecto.
 
 ## Estructura del Proyecto
 - `_source/`: Contiene el código de React, Vite y Supabase. **Solo para desarrollo.**
-- `(Raíz)/`: Contiene la versión compilada lista para el hosting.
+- `(Raíz)/`: Contiene la versión compilada lista para el hosting. Todo lo que esté aquí debe estar sincronizado con el último build.
 
-## Pasos para el Despliegue
-1. Entrar a la carpeta `_source/`.
-2. Ejecutar `npm run build`. 
-   - *Vite está configurado para exportar los archivos directamente a la raíz de este proyecto.*
-3. Conectar al FTP del hosting (Ferozo).
-4. Subir **SOLO** los archivos/carpetas que están en la **RAÍZ** del proyecto local a la carpeta `/app` (o la que corresponda) del hosting:
-   - `assets/` (carpeta)
-   - `index.html`
-   - `.htaccess`
-   - `favicon.ico`
-   - `placeholder.svg`
-   - `robots.txt`
+## Pasos Reales para cada Cambio
+1. Realizar cambios en el código dentro de `_source/`.
+2. **IMPORTANTE:** Abrir terminal en `_source/` y ejecutar `npm run build`.
+3. Esto actualizará automáticamente `index.html`, `assets/`, etc. en la raíz.
+4. Hacer `git add .` (incluyendo los archivos de la raíz actualizados).
+5. Hacer `git commit` y `git push`.
+6. En el hosting (Ferozo), subir los archivos de la raíz local a `/app`.
 
-## Recordatorio para el Desarrollador (Antigravity)
-- La configuración de Vite (`_source/vite.config.ts`) tiene el `outDir` seteado en `../` (la raíz).
-- Nunca cambies el `outDir` a `dist` o similar sin consultar.
-- El archivo `.htaccess` es vital para que las rutas de `react-router` funcionen en Ferozo (Apache).
+## Notas Técnicas para el Agente AI
+- La configuración de Vite (`_source/vite.config.ts`) tiene el `outDir: '../'`.
+- El despliegue de Tower Developers depende de que la raíz de GitHub contenga los archivos compilados.

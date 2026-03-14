@@ -7,6 +7,12 @@ import Index from "./pages/Index.tsx";
 import Properties from "./pages/Properties.tsx";
 import PropertyDetail from "./pages/PropertyDetail.tsx";
 import NotFound from "./pages/NotFound.tsx";
+import Login from "./pages/Login.tsx";
+import AdminLayout from "./components/admin/AdminLayout.tsx";
+import AdminDashboard from "./pages/admin/Dashboard.tsx";
+import AdminProperties from "./pages/admin/Properties.tsx";
+import AdminNeighborhoods from "./pages/admin/Neighborhoods.tsx";
+import PropertyForm from "./pages/admin/PropertyForm.tsx";
 
 const queryClient = new QueryClient();
 
@@ -20,6 +26,17 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/propiedades" element={<Properties />} />
           <Route path="/propiedades/:id" element={<PropertyDetail />} />
+          <Route path="/login" element={<Login />} />
+          
+          {/* Admin Routes */}
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route index element={<AdminDashboard />} />
+            <Route path="propiedades" element={<AdminProperties />} />
+            <Route path="propiedades/nueva" element={<PropertyForm />} />
+            <Route path="propiedades/:id" element={<PropertyForm />} />
+            <Route path="barrios" element={<AdminNeighborhoods />} />
+          </Route>
+
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

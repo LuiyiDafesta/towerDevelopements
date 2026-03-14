@@ -21,16 +21,17 @@ const Properties = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("properties")
-        .select("*")
+        .select("*, neighborhoods(name)")
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data;
     },
   });
 
-  const neighborhoods = useMemo(() => {
+  const neighborhoodsList = useMemo(() => {
     if (!properties) return [];
-    return [...new Set(properties.map((p) => p.neighborhood).filter(Boolean))];
+    const names = properties.map((p) => p.neighborhoods?.name).filter(Boolean);
+    return [...new Set(names)];
   }, [properties]);
 
   const filtered = useMemo(() => {
@@ -38,7 +39,7 @@ const Properties = () => {
     return properties.filter((p) => {
       if (bedrooms && p.bedrooms !== null && p.bedrooms < parseInt(bedrooms)) return false;
       if (maxPrice && p.price > parseInt(maxPrice)) return false;
-      if (neighborhood && p.neighborhood !== neighborhood) return false;
+      if (neighborhood && p.neighborhoods?.name !== neighborhood) return false;
       return true;
     });
   }, [properties, bedrooms, maxPrice, neighborhood]);
@@ -97,8 +98,8 @@ const Properties = () => {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Todos</SelectItem>
-                {neighborhoods.map((n) => (
-                  <SelectItem key={n} value={n!}>{n}</SelectItem>
+                {neighborhoodsList.map((n) => (
+                  <SelectItem key={n} value={n}>{n}</SelectItem>
                 ))}
               </SelectContent>
             </Select>

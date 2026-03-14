@@ -8,7 +8,7 @@ import PropertyCard from "@/components/PropertyCard";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ArrowLeft, Bath, BedDouble, Car, MapPin, Maximize, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowLeft, Bath, BedDouble, Car, MapPin, Maximize, ChevronLeft, ChevronRight, FileText } from "lucide-react";
 
 const PropertyDetail = () => {
   const { id } = useParams();
@@ -19,7 +19,7 @@ const PropertyDetail = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("properties")
-        .select("*")
+        .select("*, neighborhoods(name)")
         .eq("id", id!)
         .single();
       if (error) throw error;
@@ -29,18 +29,18 @@ const PropertyDetail = () => {
   });
 
   const { data: related } = useQuery({
-    queryKey: ["related-properties", id, property?.neighborhood],
+    queryKey: ["related-properties", id, property?.neighborhood_id],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("properties")
         .select("*")
         .neq("id", id!)
-        .eq("neighborhood", property!.neighborhood!)
+        .eq("neighborhood_id", property!.neighborhood_id!)
         .limit(3);
       if (error) throw error;
       return data;
     },
-    enabled: !!property?.neighborhood,
+    enabled: !!property?.neighborhood_id,
   });
 
   const images = property?.images?.length ? property.images : ["https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800"];
@@ -202,12 +202,23 @@ const PropertyDetail = () => {
                 </p>
                 <p className="text-sm text-muted-foreground mb-8 font-sans">{property.location}</p>
 
-                <Button className="w-full bg-primary text-primary-foreground hover:bg-gold-light font-sans tracking-wider text-base py-6 mb-3">
-                  Agendar Visita
-                </Button>
-                <Button variant="outline" className="w-full border-primary/40 text-primary hover:bg-primary/10 font-sans tracking-wider">
+                <Button variant="outline" className="w-full border-primary/40 text-primary hover:bg-primary/10 font-sans tracking-wider mb-6">
                   Contactar
                 </Button>
+
+                {property.pdf_url && (
+                  <div className="pt-6 border-t border-border">
+                    <p className="text-xs text-muted-foreground uppercase tracking-widest mb-3 font-sans">Documentación</p>
+                    <Button 
+                      asChild 
+                      className="w-full bg-secondary text-primary hover:bg-gold/10 border border-primary/20 gap-2 font-sans tracking-wide"
+                    >
+                      <a href={property.pdf_url} target="_blank" rel="noreferrer">
+                        <FileText className="w-4 h-4" /> Descargar Ficha PDF
+                      </a>
+                    </Button>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -216,7 +227,7 @@ const PropertyDetail = () => {
           {related && related.length > 0 && (
             <div className="mt-20">
               <h2 className="text-3xl font-serif font-bold text-foreground mb-8">
-                Propiedades en <em className="text-primary not-italic">{property.neighborhood}</em>
+                Propiedades en <em className="text-primary not-italic">{property.neighborhoods?.name || "la zona"}</em>
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {related.map((p) => (

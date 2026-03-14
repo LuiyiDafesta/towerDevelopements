@@ -174,7 +174,7 @@ const PropertyDetail = () => {
                 {property.ambientes !== null && (
                   <div className="flex flex-col items-center gap-2 p-4 bg-card rounded-lg border border-border">
                     <LayoutGrid className="w-5 h-5 text-primary" />
-                    <span className="text-lg font-bold text-foreground">{property.ambientes}</span>
+                    <span className="text-lg font-bold text-foreground">{property.ambientes} Amb.</span>
                     <span className="text-xs text-muted-foreground font-sans">Ambientes</span>
                   </div>
                 )}

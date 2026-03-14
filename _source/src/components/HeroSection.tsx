@@ -61,7 +61,9 @@ const HeroSection = () => {
                 <SelectItem value="1">1 Ambiente</SelectItem>
                 <SelectItem value="2">2 Ambientes</SelectItem>
                 <SelectItem value="3">3 Ambientes</SelectItem>
-                <SelectItem value="4">4+ Ambientes</SelectItem>
+                <SelectItem value="4">4 Ambientes</SelectItem>
+                <SelectItem value="5">5 Ambientes</SelectItem>
+                <SelectItem value="6">6+ Ambientes</SelectItem>
               </SelectContent>
             </Select>
 

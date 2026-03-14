@@ -63,7 +63,7 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
             )}
             {property.ambientes && (
               <span className="flex items-center gap-1">
-                <LayoutGrid className="w-4 h-4 text-primary" /> {property.ambientes}
+                <LayoutGrid className="w-4 h-4 text-primary" /> {property.ambientes} Amb.
               </span>
             )}
             {property.bedrooms && (

@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent } from "@/components/ui/card";
 import { Loader2, ArrowLeft, Upload, FileText, CheckCircle2, Image as ImageIcon, X } from "lucide-react";
 import { toast } from "sonner";
+import { Switch } from "@/components/ui/switch";
 
 const propertySchema = z.object({
   title: z.string().min(5, "El título debe tener al menos 5 caracteres"),
@@ -25,6 +26,7 @@ const propertySchema = z.object({
   bathrooms: z.coerce.number().min(0),
   parking: z.coerce.number().min(0),
   status: z.enum(["disponible", "reservado", "vendido"]),
+  featured: z.boolean().default(false),
   image_url: z.string().optional(),
   images: z.array(z.string()).default([]),
   project_name: z.string().optional(),
@@ -62,6 +64,7 @@ export default function PropertyForm() {
       bathrooms: 0,
       parking: 0,
       status: "disponible",
+      featured: false,
       image_url: "",
       images: [],
       project_name: "",
@@ -98,6 +101,7 @@ export default function PropertyForm() {
       images: data.images || [],
       project_name: data.project_name || "",
       ambientes: data.ambientes || 0,
+      featured: data.featured || false,
     });
     setCurrentMainImageUrl(data.image_url);
     setCurrentGalleryUrls(data.images || []);
@@ -276,6 +280,26 @@ export default function PropertyForm() {
                       </SelectContent>
                     </Select>
                     <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="featured"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-center justify-between rounded-lg border border-gold/10 bg-white/5 p-4 md:col-span-2">
+                    <div className="space-y-0.5">
+                      <FormLabel className="text-gold uppercase text-[10px] tracking-widest font-bold">Propiedad Destacada</FormLabel>
+                      <p className="text-[10px] text-white/40">Si se activa, aparecerá en la sección "Destacadas" de la página principal.</p>
+                    </div>
+                    <FormControl>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                        className="data-[state=checked]:bg-gold"
+                      />
+                    </FormControl>
                   </FormItem>
                 )}
               />

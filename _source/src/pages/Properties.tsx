@@ -37,7 +37,8 @@ const Properties = () => {
   const filtered = useMemo(() => {
     if (!properties) return [];
     return properties.filter((p) => {
-      if (ambientes && p.ambientes !== null && p.ambientes < parseInt(ambientes)) return false;
+      const selectedAmbientes = parseInt(ambientes);
+      if (ambientes && ambientes !== "all" && !isNaN(selectedAmbientes) && (p.ambientes === null || p.ambientes < selectedAmbientes)) return false;
       if (maxPrice && p.price > parseInt(maxPrice)) return false;
       if (neighborhood && neighborhood !== "all" && p.neighborhoods?.name !== neighborhood) return false;
       return true;

@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Bath, BedDouble, Car, Maximize } from "lucide-react";
+import { Bath, BedDouble, Car, Maximize, LayoutGrid } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import type { Tables } from "@/integrations/supabase/types";
 
@@ -59,6 +59,11 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
             {property.square_meters && (
               <span className="flex items-center gap-1">
                 <Maximize className="w-4 h-4 text-primary" /> {property.square_meters} m²
+              </span>
+            )}
+            {property.ambientes && (
+              <span className="flex items-center gap-1">
+                <LayoutGrid className="w-4 h-4 text-primary" /> {property.ambientes}
               </span>
             )}
             {property.bedrooms && (

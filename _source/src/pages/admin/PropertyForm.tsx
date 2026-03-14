@@ -9,8 +9,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2, ArrowLeft, Upload, FileText, CheckCircle2 } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Loader2, ArrowLeft, Upload, FileText, CheckCircle2, Image as ImageIcon, X } from "lucide-react";
 import { toast } from "sonner";
 
 const propertySchema = z.object({
@@ -19,14 +19,17 @@ const propertySchema = z.object({
   price: z.coerce.number().min(0),
   location: z.string().min(3),
   neighborhood_id: z.string().optional(),
-  surface: z.coerce.number().min(0),
+  square_meters: z.coerce.number().min(0),
   bedrooms: z.coerce.number().min(0),
   bathrooms: z.coerce.number().min(0),
   parking: z.coerce.number().min(0),
   status: z.enum(["disponible", "reservado", "vendido"]),
-  image_url: z.string().url("Debe ser una URL válida").optional().or(z.literal("")),
+  image_url: z.string().optional(),
+  images: z.array(z.string()).default([]),
   project_name: z.string().optional(),
 });
+
+type PropertyFormValues = z.infer<typeof propertySchema>;
 
 export default function PropertyForm() {
   const { id } = useParams();
@@ -34,23 +37,31 @@ export default function PropertyForm() {
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(!!id);
   const [neighborhoods, setNeighborhoods] = useState<any[]>([]);
+  
+  // Files states
+  const [mainImageFile, setMainImageFile] = useState<File | null>(null);
+  const [galleryFiles, setGalleryFiles] = useState<File[]>([]);
   const [pdfFile, setPdfFile] = useState<File | null>(null);
-  const [uploadingPdf, setUploadingPdf] = useState(false);
+  
+  // Existing URLs (from DB)
+  const [currentMainImageUrl, setCurrentMainImageUrl] = useState<string | null>(null);
+  const [currentGalleryUrls, setCurrentGalleryUrls] = useState<string[]>([]);
   const [currentPdfUrl, setCurrentPdfUrl] = useState<string | null>(null);
 
-  const form = useForm<z.infer<typeof propertySchema>>({
+  const form = useForm<PropertyFormValues>({
     resolver: zodResolver(propertySchema),
     defaultValues: {
       title: "",
       description: "",
       price: 0,
       location: "",
-      surface: 0,
+      square_meters: 0,
       bedrooms: 0,
       bathrooms: 0,
       parking: 0,
       status: "disponible",
       image_url: "",
+      images: [],
       project_name: "",
     },
   });
@@ -82,16 +93,19 @@ export default function PropertyForm() {
       ...data,
       neighborhood_id: data.neighborhood_id || undefined,
       image_url: data.image_url || "",
+      images: data.images || [],
       project_name: data.project_name || "",
     });
+    setCurrentMainImageUrl(data.image_url);
+    setCurrentGalleryUrls(data.images || []);
     setCurrentPdfUrl(data.pdf_url);
     setFetching(false);
   };
 
-  const uploadFile = async (file: File) => {
+  const uploadToStorage = async (file: File, folder: string) => {
     const fileExt = file.name.split('.').pop();
     const fileName = `${Math.random().toString(36).substring(2)}-${Date.now()}.${fileExt}`;
-    const filePath = `fichas/${fileName}`;
+    const filePath = `${folder}/${fileName}`;
 
     const { error: uploadError } = await supabase.storage
       .from('property-files')
@@ -106,23 +120,42 @@ export default function PropertyForm() {
     return publicUrl;
   };
 
-  const onSubmit = async (values: z.infer<typeof propertySchema>) => {
+  const onSubmit = async (values: PropertyFormValues) => {
     setLoading(true);
     try {
-      let pdf_url = currentPdfUrl;
-
-      if (pdfFile) {
-        setUploadingPdf(true);
-        pdf_url = await uploadFile(pdfFile);
-        setUploadingPdf(false);
+      // 1. Upload Main Image if exists
+      let image_url = currentMainImageUrl;
+      if (mainImageFile) {
+        image_url = await uploadToStorage(mainImageFile, 'main-images');
       }
 
-      const finalData: any = { ...values, pdf_url };
+      // 2. Upload Gallery Images
+      let gallery_urls = [...currentGalleryUrls];
+      if (galleryFiles.length > 0) {
+        toast.info(`Subiendo ${galleryFiles.length} fotos de la galería...`);
+        const uploadedGallery = await Promise.all(
+          galleryFiles.map(file => uploadToStorage(file, 'gallery'))
+        );
+        gallery_urls = [...gallery_urls, ...uploadedGallery];
+      }
+
+      // 3. Upload PDF if exists
+      let pdf_url = currentPdfUrl;
+      if (pdfFile) {
+        pdf_url = await uploadToStorage(pdfFile, 'fichas');
+      }
+
+      const finalData: any = { 
+        ...values, 
+        image_url, 
+        images: gallery_urls, 
+        pdf_url 
+      };
 
       if (id) {
         const { error } = await supabase.from("properties").update(finalData).eq("id", id);
         if (error) throw error;
-        toast.success("Propiedad actualizada hoy.");
+        toast.success("Propiedad actualizada.");
       } else {
         const { error } = await supabase.from("properties").insert([finalData]);
         if (error) throw error;
@@ -137,6 +170,20 @@ export default function PropertyForm() {
     }
   };
 
+  const handleGalleryUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setGalleryFiles([...galleryFiles, ...Array.from(e.target.files)]);
+    }
+  };
+
+  const removeGalleryFile = (index: number) => {
+    setGalleryFiles(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const removeExistingGalleryUrl = (url: string) => {
+    setCurrentGalleryUrls(prev => prev.filter(u => u !== url));
+  };
+
   if (fetching) {
     return (
       <div className="flex items-center justify-center h-96">
@@ -146,7 +193,7 @@ export default function PropertyForm() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-20">
       <div className="flex items-center gap-4">
         <Button variant="ghost" size="icon" onClick={() => navigate(-1)} className="text-white/40 hover:text-white">
           <ArrowLeft className="w-5 h-5" />
@@ -270,7 +317,7 @@ export default function PropertyForm() {
               {/* Características */}
               <FormField
                 control={form.control}
-                name="surface"
+                name="square_meters"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="text-gold/80 uppercase text-[10px] tracking-widest font-bold">Sup. Total (m²)</FormLabel>
@@ -321,77 +368,162 @@ export default function PropertyForm() {
                 />
               </div>
 
-              {/* Media */}
-              <div className="md:col-span-2">
-                <FormField
-                  control={form.control}
-                  name="image_url"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-gold/80 uppercase text-[10px] tracking-widest font-bold">URL de Imagen Principal</FormLabel>
-                      <FormControl>
-                        <Input {...field} placeholder="https://..." className="bg-white/5 border-gold/10 text-white" />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-
-              {/* PDF Upload Section */}
-              <div className="md:col-span-2 space-y-2">
-                <FormLabel className="text-gold/80 uppercase text-[10px] tracking-widest font-bold block mb-2">Ficha Técnica (PDF)</FormLabel>
-                <div className="flex flex-col gap-4">
-                  {currentPdfUrl && (
-                    <div className="flex items-center gap-2 p-3 bg-gold/5 border border-gold/20 rounded-lg text-gold text-sm">
-                      <CheckCircle2 className="w-4 h-4" />
-                      <span>Ficha actual configurada correctamente.</span>
-                      <a href={currentPdfUrl} target="_blank" rel="noreferrer" className="ml-auto underline">Ver PDF</a>
+              {/* Main Image Uploader */}
+              <div className="md:col-span-2 space-y-4 pt-4 border-t border-gold/10">
+                <FormLabel className="text-gold uppercase text-xs tracking-widest font-bold flex items-center gap-2">
+                  <ImageIcon className="w-4 h-4" /> Foto Principal
+                </FormLabel>
+                
+                {currentMainImageUrl && (
+                  <div className="relative group w-40 h-40 rounded-lg overflow-hidden border border-gold/20">
+                    <img src={currentMainImageUrl} alt="Principal" className="w-full h-full object-cover" />
+                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity cursor-pointer">
+                      <p className="text-[10px] text-white font-bold" onClick={() => setCurrentMainImageUrl(null)}>REEMPLAZAR</p>
                     </div>
-                  )}
-                  
+                  </div>
+                )}
+
+                {!currentMainImageUrl && (
                   <div className="relative group">
                     <input
                       type="file"
-                      id="pdf-upload"
-                      accept=".pdf"
-                      onChange={(e) => setPdfFile(e.target.files?.[0] || null)}
+                      id="main-image-upload"
+                      accept="image/*"
+                      onChange={(e) => setMainImageFile(e.target.files?.[0] || null)}
                       className="hidden"
                     />
                     <label
-                      htmlFor="pdf-upload"
+                      htmlFor="main-image-upload"
                       className="flex flex-col items-center justify-center border-2 border-dashed border-gold/20 rounded-xl p-8 hover:border-gold/40 hover:bg-gold/5 transition-all cursor-pointer"
                     >
-                      {pdfFile ? (
+                      {mainImageFile ? (
                         <div className="flex items-center gap-2 text-white">
-                          <FileText className="w-8 h-8 text-gold" />
-                          <span className="font-semibold">{pdfFile.name}</span>
+                          <CheckCircle2 className="w-5 h-5 text-gold" />
+                          <span className="font-semibold">{mainImageFile.name}</span>
                         </div>
                       ) : (
                         <div className="flex flex-col items-center gap-2 text-white/40">
                           <Upload className="w-8 h-8 mb-2" />
-                          <span className="text-sm font-medium">Subir nueva Ficha PDF</span>
+                          <span className="text-sm font-medium uppercase tracking-tighter">Subir Foto Principal</span>
                         </div>
                       )}
                     </label>
                   </div>
+                )}
+              </div>
+
+              {/* Gallery Uploader */}
+              <div className="md:col-span-2 space-y-4 pt-4 border-t border-gold/10">
+                <FormLabel className="text-gold uppercase text-xs tracking-widest font-bold flex items-center gap-2">
+                  <ImageIcon className="w-4 h-4" /> Galería de Fotos
+                </FormLabel>
+                
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                  {/* Existing URLs */}
+                  {currentGalleryUrls.map((url, idx) => (
+                    <div key={`existing-${idx}`} className="relative group h-32 rounded-lg overflow-hidden border border-gold/10">
+                      <img src={url} alt="Gallery item" className="w-full h-full object-cover" />
+                      <button 
+                        type="button"
+                        onClick={() => removeExistingGalleryUrl(url)}
+                        className="absolute top-1 right-1 bg-red-500 rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        <X className="w-3 h-3 text-white" />
+                      </button>
+                    </div>
+                  ))}
+                  
+                  {/* New files being uploaded */}
+                  {galleryFiles.map((file, idx) => (
+                    <div key={`new-${idx}`} className="relative group h-32 rounded-lg overflow-hidden border border-gold/40 border-dashed bg-gold/5">
+                      <div className="w-full h-full flex items-center justify-center text-[8px] text-gold p-2 text-center uppercase font-bold leading-none">
+                        {file.name}
+                      </div>
+                      <button 
+                        type="button"
+                        onClick={() => removeGalleryFile(idx)}
+                        className="absolute top-1 right-1 bg-gold rounded-full p-1"
+                      >
+                        <X className="w-3 h-3 text-black" />
+                      </button>
+                    </div>
+                  ))}
+
+                  <label 
+                    htmlFor="gallery-upload" 
+                    className="h-32 flex flex-col items-center justify-center border-2 border-dashed border-gold/10 rounded-lg cursor-pointer hover:bg-gold/5 hover:border-gold/30 transition-all"
+                  >
+                    <Input
+                      id="gallery-upload"
+                      type="file"
+                      multiple
+                      accept="image/*"
+                      onChange={handleGalleryUpload}
+                      className="hidden"
+                    />
+                    <Upload className="w-5 h-5 text-white/20 mb-2" />
+                    <span className="text-[10px] text-white/40 font-bold uppercase tracking-widest">Añadir Fotos</span>
+                  </label>
+                </div>
+              </div>
+
+              {/* PDF Upload Section */}
+              <div className="md:col-span-2 space-y-4 pt-4 border-t border-gold/10">
+                <FormLabel className="text-gold/80 uppercase text-[10px] tracking-widest font-bold block">Ficha Técnica (PDF)</FormLabel>
+                <div className="flex flex-col gap-4">
+                  {currentPdfUrl && (
+                    <div className="flex items-center gap-2 p-3 bg-gold/5 border border-gold/20 rounded-lg text-gold text-sm font-inter">
+                      <CheckCircle2 className="w-4 h-4" />
+                      <span>Ficha actual cargada correctamente.</span>
+                      <a href={currentPdfUrl} target="_blank" rel="noreferrer" className="ml-auto underline font-bold">VER PDF</a>
+                      <button type="button" onClick={() => setCurrentPdfUrl(null)} className="ml-2 text-red-500/60 hover:text-red-500"><X className="w-4 h-4"/></button>
+                    </div>
+                  )}
+                  
+                  {!currentPdfUrl && (
+                    <div className="relative group">
+                      <input
+                        type="file"
+                        id="pdf-upload"
+                        accept=".pdf"
+                        onChange={(e) => setPdfFile(e.target.files?.[0] || null)}
+                        className="hidden"
+                      />
+                      <label
+                        htmlFor="pdf-upload"
+                        className="flex flex-col items-center justify-center border-2 border-dashed border-gold/20 rounded-xl p-6 hover:border-gold/40 hover:bg-gold/5 transition-all cursor-pointer"
+                      >
+                        {pdfFile ? (
+                          <div className="flex items-center gap-2 text-white">
+                            <FileText className="w-6 h-6 text-gold" />
+                            <span className="font-semibold text-sm">{pdfFile.name}</span>
+                          </div>
+                        ) : (
+                          <div className="flex flex-col items-center gap-2 text-white/40">
+                            <Upload className="w-6 h-6 mb-1" />
+                            <span className="text-[10px] font-bold uppercase tracking-widest">Subir Ficha PDF</span>
+                          </div>
+                        )}
+                      </label>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
             
-            <div className="mt-10 flex gap-4">
+            <div className="mt-12 flex gap-4">
               <Button
                 type="submit"
-                disabled={loading || uploadingPdf}
-                className="flex-1 bg-gold text-black hover:bg-gold/80 font-bold h-12"
+                disabled={loading}
+                className="flex-1 bg-gold text-black hover:bg-gold/80 font-bold h-14 tracking-widest text-lg"
               >
-                {loading ? <Loader2 className="animate-spin" /> : id ? "GUARDAR CAMBIOS" : "CREAR PROPIEDAD"}
+                {loading ? <Loader2 className="animate-spin" /> : id ? "GUARDAR CAMBIOS" : "PUBLICAR PROPIEDAD"}
               </Button>
               <Button
                 type="button"
                 variant="outline"
                 onClick={() => navigate("/admin/propiedades")}
-                className="border-white/10 text-white/60 hover:bg-white/5 hover:text-white"
+                className="border-white/10 text-white/60 hover:bg-white/5 hover:text-white h-14 font-bold"
               >
                 CANCELAR
               </Button>

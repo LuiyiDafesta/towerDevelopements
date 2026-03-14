@@ -16,7 +16,7 @@ const statusColors: Record<string, string> = {
 };
 
 const PropertyCard = ({ property }: PropertyCardProps) => {
-  const image = property.images?.[0] || "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800";
+  const image = property.image_url || property.images?.[0] || "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800";
 
   return (
     <Link to={`/propiedades/${property.id}`} className="group block">

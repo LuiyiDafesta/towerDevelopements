@@ -43,7 +43,14 @@ const PropertyDetail = () => {
     enabled: !!property?.neighborhood_id,
   });
 
-  const images = property?.images?.length ? property.images : ["https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800"];
+  const images = [
+    property?.image_url,
+    ...(property?.images || [])
+  ].filter(Boolean) as string[];
+
+  if (images.length === 0) {
+    images.push("https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800");
+  }
 
   if (isLoading) {
     return (

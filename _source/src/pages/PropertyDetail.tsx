@@ -171,6 +171,13 @@ const PropertyDetail = () => {
                     <span className="text-xs text-muted-foreground font-sans">Baños</span>
                   </div>
                 )}
+                {property.ambientes !== null && (
+                  <div className="flex flex-col items-center gap-2 p-4 bg-card rounded-lg border border-border">
+                    <BedDouble className="w-5 h-5 text-primary" />
+                    <span className="text-lg font-bold text-foreground">{property.ambientes}</span>
+                    <span className="text-xs text-muted-foreground font-sans">Ambientes</span>
+                  </div>
+                )}
                 {property.parking !== null && property.parking > 0 && (
                   <div className="flex flex-col items-center gap-2 p-4 bg-card rounded-lg border border-border">
                     <Car className="w-5 h-5 text-primary" />

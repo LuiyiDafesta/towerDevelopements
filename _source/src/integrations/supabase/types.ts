@@ -72,6 +72,7 @@ export type Database = {
           square_meters: number | null
           status: Database["public"]["Enums"]["property_status"] | null
           title: string
+          ambientes: number | null
         }
         Insert: {
           amenities?: string[] | null
@@ -93,6 +94,7 @@ export type Database = {
           square_meters?: number | null
           status?: Database["public"]["Enums"]["property_status"] | null
           title: string
+          ambientes?: number | null
         }
         Update: {
           amenities?: string[] | null
@@ -114,6 +116,7 @@ export type Database = {
           square_meters?: number | null
           status?: Database["public"]["Enums"]["property_status"] | null
           title?: string
+          ambientes?: number | null
         }
         Relationships: [
           {

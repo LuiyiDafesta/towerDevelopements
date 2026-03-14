@@ -1,19 +1,31 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { supabase } from "@/integrations/supabase/client";
 
 const HeroSection = () => {
   const navigate = useNavigate();
-  const [bedrooms, setBedrooms] = useState("");
+  const [ambientes, setAmbientes] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
+  const [neighborhood, setNeighborhood] = useState("");
+  const [neighborhoods, setNeighborhoods] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchNeighborhoods = async () => {
+      const { data } = await supabase.from("neighborhoods").select("*").order("name");
+      setNeighborhoods(data || []);
+    };
+    fetchNeighborhoods();
+  }, []);
 
   const handleSearch = () => {
     const params = new URLSearchParams();
-    if (bedrooms) params.set("bedrooms", bedrooms);
+    if (ambientes) params.set("ambientes", ambientes);
     if (maxPrice) params.set("maxPrice", maxPrice);
+    if (neighborhood && neighborhood !== "all") params.set("neighborhood", neighborhood);
     navigate(`/propiedades?${params.toString()}`);
   };
 
@@ -39,23 +51,35 @@ const HeroSection = () => {
         </p>
 
         {/* Search bar */}
-        <div className="max-w-3xl mx-auto bg-card/80 backdrop-blur-md border border-border rounded-xl p-4 md:p-6 animate-fade-in-up" style={{ animationDelay: "0.3s" }}>
-          <div className="flex flex-col md:flex-row gap-4">
-            <Select value={bedrooms} onValueChange={setBedrooms}>
+        <div className="max-w-4xl mx-auto bg-card/80 backdrop-blur-md border border-border rounded-xl p-4 md:p-6 animate-fade-in-up" style={{ animationDelay: "0.3s" }}>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <Select value={ambientes} onValueChange={setAmbientes}>
               <SelectTrigger className="bg-secondary border-border text-foreground font-sans">
-                <SelectValue placeholder="Dormitorios" />
+                <SelectValue placeholder="Ambientes" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="1">1 Dormitorio</SelectItem>
-                <SelectItem value="2">2 Dormitorios</SelectItem>
-                <SelectItem value="3">3 Dormitorios</SelectItem>
-                <SelectItem value="4">4+ Dormitorios</SelectItem>
+                <SelectItem value="1">1 Ambiente</SelectItem>
+                <SelectItem value="2">2 Ambientes</SelectItem>
+                <SelectItem value="3">3 Ambientes</SelectItem>
+                <SelectItem value="4">4+ Ambientes</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <Select value={neighborhood} onValueChange={setNeighborhood}>
+              <SelectTrigger className="bg-secondary border-border text-foreground font-sans">
+                <SelectValue placeholder="Barrio" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Todos los Barrios</SelectItem>
+                {neighborhoods.map((n) => (
+                  <SelectItem key={n.id} value={n.name}>{n.name}</SelectItem>
+                ))}
               </SelectContent>
             </Select>
 
             <Input
               type="number"
-              placeholder="Precio máximo (USD)"
+              placeholder="Precio máx. (USD)"
               value={maxPrice}
               onChange={(e) => setMaxPrice(e.target.value)}
               className="bg-secondary border-border text-foreground font-sans"

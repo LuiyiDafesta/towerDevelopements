@@ -20,6 +20,7 @@ const propertySchema = z.object({
   location: z.string().min(3),
   neighborhood_id: z.string().optional(),
   square_meters: z.coerce.number().min(0),
+  ambientes: z.coerce.number().min(0).optional(),
   bedrooms: z.coerce.number().min(0),
   bathrooms: z.coerce.number().min(0),
   parking: z.coerce.number().min(0),
@@ -56,6 +57,7 @@ export default function PropertyForm() {
       price: 0,
       location: "",
       square_meters: 0,
+      ambientes: 0,
       bedrooms: 0,
       bathrooms: 0,
       parking: 0,
@@ -95,6 +97,7 @@ export default function PropertyForm() {
       image_url: data.image_url || "",
       images: data.images || [],
       project_name: data.project_name || "",
+      ambientes: data.ambientes || 0,
     });
     setCurrentMainImageUrl(data.image_url);
     setCurrentGalleryUrls(data.images || []);
@@ -315,19 +318,34 @@ export default function PropertyForm() {
               />
 
               {/* Características */}
-              <FormField
-                control={form.control}
-                name="square_meters"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-gold/80 uppercase text-[10px] tracking-widest font-bold">Sup. Total (m²)</FormLabel>
-                    <FormControl>
-                      <Input type="number" {...field} className="bg-white/5 border-gold/10 text-white" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <div className="grid grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="square_meters"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-gold/80 uppercase text-[10px] tracking-widest font-bold text-nowrap">Sup. Total (m²)</FormLabel>
+                      <FormControl>
+                        <Input type="number" {...field} className="bg-white/5 border-gold/10 text-white" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="ambientes"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-gold/80 uppercase text-[10px] tracking-widest font-bold">Ambientes</FormLabel>
+                      <FormControl>
+                        <Input type="number" {...field} className="bg-white/5 border-gold/10 text-white" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
 
               <div className="grid grid-cols-3 gap-4">
                 <FormField

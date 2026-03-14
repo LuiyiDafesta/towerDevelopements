@@ -12,9 +12,9 @@ import { Label } from "@/components/ui/label";
 
 const Properties = () => {
   const [searchParams] = useSearchParams();
-  const [bedrooms, setBedrooms] = useState(searchParams.get("bedrooms") || "");
+  const [ambientes, setAmbientes] = useState(searchParams.get("ambientes") || "");
   const [maxPrice, setMaxPrice] = useState(searchParams.get("maxPrice") || "");
-  const [neighborhood, setNeighborhood] = useState("");
+  const [neighborhood, setNeighborhood] = useState(searchParams.get("neighborhood") || "");
 
   const { data: properties, isLoading } = useQuery({
     queryKey: ["all-properties"],
@@ -37,12 +37,12 @@ const Properties = () => {
   const filtered = useMemo(() => {
     if (!properties) return [];
     return properties.filter((p) => {
-      if (bedrooms && p.bedrooms !== null && p.bedrooms < parseInt(bedrooms)) return false;
+      if (ambientes && p.ambientes !== null && p.ambientes < parseInt(ambientes)) return false;
       if (maxPrice && p.price > parseInt(maxPrice)) return false;
-      if (neighborhood && p.neighborhoods?.name !== neighborhood) return false;
+      if (neighborhood && neighborhood !== "all" && p.neighborhoods?.name !== neighborhood) return false;
       return true;
     });
-  }, [properties, bedrooms, maxPrice, neighborhood]);
+  }, [properties, ambientes, maxPrice, neighborhood]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -64,8 +64,8 @@ const Properties = () => {
         {/* Filters */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12 p-6 bg-card rounded-xl border border-border">
           <div>
-            <Label className="text-muted-foreground font-sans text-xs tracking-wider uppercase mb-2 block">Dormitorios</Label>
-            <Select value={bedrooms} onValueChange={setBedrooms}>
+            <Label className="text-muted-foreground font-sans text-xs tracking-wider uppercase mb-2 block">Ambientes</Label>
+            <Select value={ambientes} onValueChange={setAmbientes}>
               <SelectTrigger className="bg-secondary border-border font-sans">
                 <SelectValue placeholder="Todos" />
               </SelectTrigger>

@@ -432,6 +432,8 @@ export default function PropertyForm() {
                     </FormItem>
                   )}
                 />
+              </div>
+
               {/* Información de Contacto */}
               <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-gold/10">
                 <FormField
@@ -514,7 +516,6 @@ export default function PropertyForm() {
                   </FormItem>
                 )}
               />
-            </div>
 
             {/* Main Image Uploader */}
               <div className="md:col-span-2 space-y-4 pt-4 border-t border-gold/10">

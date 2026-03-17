@@ -38,7 +38,13 @@ const Properties = () => {
     if (!properties) return [];
     return properties.filter((p) => {
       const selectedAmbientes = parseInt(ambientes);
-      if (ambientes && ambientes !== "all" && !isNaN(selectedAmbientes) && (p.ambientes === null || p.ambientes < selectedAmbientes)) return false;
+      if (ambientes && ambientes !== "all" && !isNaN(selectedAmbientes)) {
+        if (selectedAmbientes === 6) {
+          if (p.ambientes === null || p.ambientes < 6) return false;
+        } else {
+          if (p.ambientes !== selectedAmbientes) return false;
+        }
+      }
       if (maxPrice && p.price > parseInt(maxPrice)) return false;
       if (neighborhood && neighborhood !== "all" && p.neighborhoods?.name !== neighborhood) return false;
       return true;
@@ -72,14 +78,12 @@ const Properties = () => {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Todos</SelectItem>
-                <SelectItem value="1">1+</SelectItem>
-                <SelectItem value="2">2+</SelectItem>
-                <SelectItem value="3">3+</SelectItem>
-                <SelectItem value="4">4+</SelectItem>
-                <SelectItem value="5">5+</SelectItem>
-                <SelectItem value="6">6+</SelectItem>
-                <SelectItem value="7">7+</SelectItem>
-                <SelectItem value="8">8+</SelectItem>
+                <SelectItem value="1">1 Ambiente</SelectItem>
+                <SelectItem value="2">2 Ambientes</SelectItem>
+                <SelectItem value="3">3 Ambientes</SelectItem>
+                <SelectItem value="4">4 Ambientes</SelectItem>
+                <SelectItem value="5">5 Ambientes</SelectItem>
+                <SelectItem value="6">6+ Ambientes</SelectItem>
               </SelectContent>
             </Select>
           </div>

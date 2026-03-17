@@ -46,6 +46,8 @@ const propertySchema = z.object({
   images: z.array(z.string()).default([]),
   amenities: z.array(z.string()).default([]),
   project_name: z.string().optional(),
+  whatsapp: z.string().optional(),
+  contact_email: z.string().optional(),
 });
 
 type PropertyFormValues = z.infer<typeof propertySchema>;
@@ -85,6 +87,8 @@ export default function PropertyForm() {
       images: [],
       amenities: [],
       project_name: "",
+      whatsapp: "",
+      contact_email: "",
     },
   });
 
@@ -120,6 +124,8 @@ export default function PropertyForm() {
       ambientes: data.ambientes || 0,
       featured: data.featured || false,
       amenities: data.amenities || [],
+      whatsapp: data.whatsapp || "",
+      contact_email: data.contact_email || "",
     });
     setCurrentMainImageUrl(data.image_url);
     setCurrentGalleryUrls(data.images || []);
@@ -423,6 +429,38 @@ export default function PropertyForm() {
                       <FormControl>
                         <Input type="number" {...field} className="bg-white/5 border-gold/10 text-white" />
                       </FormControl>
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              {/* Información de Contacto */}
+              <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-gold/10">
+                <FormField
+                  control={form.control}
+                  name="whatsapp"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-gold/80 uppercase text-[10px] tracking-widest font-bold block">Teléfono WhatsApp</FormLabel>
+                      <p className="text-[10px] text-white/40 mb-2">Incluir el código del país sin el +, ej: 5491123456789</p>
+                      <FormControl>
+                        <Input {...field} placeholder="5491123456789" className="bg-white/5 border-gold/10 text-white" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="contact_email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-gold/80 uppercase text-[10px] tracking-widest font-bold block">Email de Contacto</FormLabel>
+                      <p className="text-[10px] text-white/40 mb-2">A este correo llegarán las consultas del formulario</p>
+                      <FormControl>
+                        <Input type="email" {...field} placeholder="info@towerdevelopers.com" className="bg-white/5 border-gold/10 text-white" />
+                      </FormControl>
+                      <FormMessage />
                     </FormItem>
                   )}
                 />

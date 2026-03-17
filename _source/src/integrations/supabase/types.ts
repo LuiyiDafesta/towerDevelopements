@@ -73,6 +73,8 @@ export type Database = {
           status: Database["public"]["Enums"]["property_status"] | null
           title: string
           ambientes: number | null
+          whatsapp: string | null
+          contact_email: string | null
         }
         Insert: {
           amenities?: string[] | null
@@ -95,6 +97,8 @@ export type Database = {
           status?: Database["public"]["Enums"]["property_status"] | null
           title: string
           ambientes?: number | null
+          whatsapp?: string | null
+          contact_email?: string | null
         }
         Update: {
           amenities?: string[] | null
@@ -117,6 +121,8 @@ export type Database = {
           status?: Database["public"]["Enums"]["property_status"] | null
           title?: string
           ambientes?: number | null
+          whatsapp?: string | null
+          contact_email?: string | null
         }
         Relationships: [
           {

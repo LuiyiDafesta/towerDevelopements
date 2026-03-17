@@ -174,7 +174,7 @@ const PropertyDetail = () => {
 
                 <div className="mt-8">
                   <Button asChild className="w-full bg-primary text-black hover:bg-gold-light rounded-none py-7 font-black tracking-widest uppercase text-xs">
-                    <a href={`https://wa.me/5491122334455?text=Hola, me interesa la propiedad: ${property.title}`} target="_blank" rel="noreferrer">
+                    <a href={`https://wa.me/${property.whatsapp || "5491122334455"}?text=Hola, me interesa la propiedad: ${property.title} (REF-${property.id.substring(0, 8).toUpperCase()})`} target="_blank" rel="noreferrer">
                       Contactar por WhatsApp
                     </a>
                   </Button>
@@ -243,7 +243,7 @@ const PropertyDetail = () => {
               {property.location && (
                 <div className="space-y-10 pt-8 mt-8 border-t border-white/5">
                   <h2 className="text-[10px] uppercase tracking-[0.6em] text-primary font-black pb-4 border-b border-primary/20 w-fit">UBICACIÓN</h2>
-                  <div className="w-full h-[400px] border border-white/10 rounded-sm overflow-hidden relative shadow-2xl">
+                  <div className="w-full h-[250px] border border-white/10 rounded-sm overflow-hidden relative shadow-2xl">
                     <iframe
                       width="100%"
                       height="100%"
@@ -260,35 +260,78 @@ const PropertyDetail = () => {
 
             {/* Detailed Contact Form (Col 4) */}
             <div className="lg:col-span-4">
+              <div className="bg-[#0A0A0A] border border-white/5 p-8 h-full flex flex-col shadow-xl mb-12">
+                <p className="text-[10px] uppercase tracking-[0.4em] text-white/40 font-bold mb-2">REFERENCIA</p>
+                <p className="text-xl font-serif text-white tracking-tight">
+                  REF-{property.id.substring(0, 8).toUpperCase()}
+                </p>
+              </div>
+
               <div className="bg-white/5 border border-white/10 p-10 backdrop-blur-md relative">
                 <div className="absolute -top-px left-8 right-8 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
                 
                 <h3 className="text-lg font-serif font-bold text-white mb-2 tracking-tight">Consultá ahora</h3>
                 <p className="text-[10px] text-white/40 uppercase tracking-[0.2em] mb-10">Te respondemos a la brevedad.</p>
 
-                <form onSubmit={handleContactSubmit} className="space-y-8">
+                <form onSubmit={async (e) => {
+                  e.preventDefault();
+                  const form = e.target as HTMLFormElement;
+                  const formData = new FormData(form);
+                  
+                  try {
+                    const response = await fetch("https://towerdevelopers.com/contact.php", {
+                      method: "POST",
+                      headers: {
+                        "Content-Type": "application/json",
+                      },
+                      body: JSON.stringify({
+                        nombre: formData.get("nombre"),
+                        email: formData.get("email"),
+                        telefono: formData.get("telefono"),
+                        consulta: formData.get("consulta"),
+                        property_title: property.title,
+                        owner_email: property.contact_email || "info@towerdevelopers.com"
+                      }),
+                    });
+
+                    if (response.ok) {
+                      toast.success("Consulta enviada con éxito. Nos contactaremos a la brevedad.");
+                      form.reset();
+                    } else {
+                      toast.error("Hubo un error al enviar la consulta. Por favor, intenta de nuevo.");
+                    }
+                  } catch (error) {
+                    toast.error("Error de conexión al intentar enviar el formulario.");
+                  }
+                }} className="space-y-8">
                   <div className="space-y-6">
                     <div className="group">
                       <Input 
+                        name="nombre"
+                        required
                         placeholder="Tu nombre *" 
                         className="bg-transparent border-0 border-b border-white/10 rounded-none focus-visible:ring-0 focus-visible:border-primary text-xs tracking-widest px-0 h-10 transition-colors group-hover:border-white/20"
                       />
                     </div>
                     <div className="group">
                       <Input 
-                        placeholder="Tu email *" 
+                        name="email"
+                        required
                         type="email"
+                        placeholder="Tu email *" 
                         className="bg-transparent border-0 border-b border-white/10 rounded-none focus-visible:ring-0 focus-visible:border-primary text-xs tracking-widest px-0 h-10 transition-colors group-hover:border-white/20"
                       />
                     </div>
                     <div className="group">
                       <Input 
+                        name="telefono"
                         placeholder="Tu teléfono" 
                         className="bg-transparent border-0 border-b border-white/10 rounded-none focus-visible:ring-0 focus-visible:border-primary text-xs tracking-widest px-0 h-10 transition-colors group-hover:border-white/20"
                       />
                     </div>
                     <div className="group">
                       <Textarea 
+                        name="consulta"
                         placeholder="Tu consulta" 
                         className="bg-transparent border-0 border-b border-white/10 rounded-none focus-visible:ring-0 focus-visible:border-primary text-xs tracking-widest px-0 min-h-[120px] resize-none transition-colors group-hover:border-white/20"
                       />

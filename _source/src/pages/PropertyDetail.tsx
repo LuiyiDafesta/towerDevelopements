@@ -260,7 +260,7 @@ const PropertyDetail = () => {
 
             {/* Detailed Contact Form (Col 4) */}
             <div className="lg:col-span-4">
-              <div className="bg-[#0A0A0A] border border-white/5 p-8 h-full flex flex-col shadow-xl mb-12">
+              <div className="bg-[#0A0A0A] border border-white/5 p-8 shadow-xl mb-12">
                 <p className="text-[10px] uppercase tracking-[0.4em] text-white/40 font-bold mb-2">REFERENCIA</p>
                 <p className="text-xl font-serif text-white tracking-tight">
                   REF-{property.id.substring(0, 8).toUpperCase()}

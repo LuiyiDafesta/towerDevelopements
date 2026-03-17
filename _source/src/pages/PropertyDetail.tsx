@@ -239,6 +239,23 @@ const PropertyDetail = () => {
                   </div>
                 </div>
               )}
+
+              {property.location && (
+                <div className="space-y-10 pt-8 mt-8 border-t border-white/5">
+                  <h2 className="text-[10px] uppercase tracking-[0.6em] text-primary font-black pb-4 border-b border-primary/20 w-fit">UBICACIÓN</h2>
+                  <div className="w-full h-[400px] border border-white/10 rounded-sm overflow-hidden relative shadow-2xl">
+                    <iframe
+                      width="100%"
+                      height="100%"
+                      style={{ border: 0, filter: 'invert(90%) hue-rotate(180deg) contrast(100%)' }}
+                      loading="lazy"
+                      allowFullScreen
+                      referrerPolicy="no-referrer-when-downgrade"
+                      src={`https://maps.google.com/maps?q=${encodeURIComponent(property.location)}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
+                    ></iframe>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Detailed Contact Form (Col 4) */}

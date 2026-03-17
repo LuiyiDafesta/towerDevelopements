@@ -13,6 +13,21 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Loader2, ArrowLeft, Upload, FileText, CheckCircle2, Image as ImageIcon, X } from "lucide-react";
 import { toast } from "sonner";
 import { Switch } from "@/components/ui/switch";
+import { Checkbox } from "@/components/ui/checkbox";
+
+const AVAILABLE_AMENITIES = [
+  "Piscina",
+  "Gimnasio",
+  "SUM",
+  "Seguridad 24h",
+  "Jardín",
+  "Parrilla",
+  "Balcón",
+  "Terraza",
+  "Laundry",
+  "Cochera de Cortesía",
+  "Solarium"
+];
 
 const propertySchema = z.object({
   title: z.string().min(5, "El título debe tener al menos 5 caracteres"),
@@ -29,6 +44,7 @@ const propertySchema = z.object({
   featured: z.boolean().default(false),
   image_url: z.string().optional(),
   images: z.array(z.string()).default([]),
+  amenities: z.array(z.string()).default([]),
   project_name: z.string().optional(),
 });
 
@@ -67,6 +83,7 @@ export default function PropertyForm() {
       featured: false,
       image_url: "",
       images: [],
+      amenities: [],
       project_name: "",
     },
   });
@@ -102,6 +119,7 @@ export default function PropertyForm() {
       project_name: data.project_name || "",
       ambientes: data.ambientes || 0,
       featured: data.featured || false,
+      amenities: data.amenities || [],
     });
     setCurrentMainImageUrl(data.image_url);
     setCurrentGalleryUrls(data.images || []);
@@ -409,6 +427,57 @@ export default function PropertyForm() {
                   )}
                 />
               </div>
+
+              {/* Amenities */}
+              <FormField
+                control={form.control}
+                name="amenities"
+                render={() => (
+                  <FormItem className="md:col-span-2 space-y-4 pt-4 border-t border-gold/10">
+                    <div className="mb-4">
+                      <FormLabel className="text-gold uppercase text-xs tracking-widest font-bold">Amenities</FormLabel>
+                      <p className="text-[10px] text-white/40">Seleccione los amenities disponibles.</p>
+                    </div>
+                    <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
+                      {AVAILABLE_AMENITIES.map((amenity) => (
+                        <FormField
+                          key={amenity}
+                          control={form.control}
+                          name="amenities"
+                          render={({ field }) => {
+                            return (
+                              <FormItem
+                                key={amenity}
+                                className="flex flex-row items-start space-x-3 space-y-0"
+                              >
+                                <FormControl>
+                                  <Checkbox
+                                    checked={field.value?.includes(amenity)}
+                                    onCheckedChange={(checked) => {
+                                      return checked
+                                        ? field.onChange([...field.value, amenity])
+                                        : field.onChange(
+                                            field.value?.filter(
+                                              (value) => value !== amenity
+                                            )
+                                          )
+                                    }}
+                                    className="border-gold/20 data-[state=checked]:bg-gold data-[state=checked]:text-black focus:ring-gold"
+                                  />
+                                </FormControl>
+                                <FormLabel className="font-normal text-white text-sm cursor-pointer whitespace-nowrap">
+                                  {amenity}
+                                </FormLabel>
+                              </FormItem>
+                            )
+                          }}
+                        />
+                      ))}
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
               {/* Main Image Uploader */}
               <div className="md:col-span-2 space-y-4 pt-4 border-t border-gold/10">

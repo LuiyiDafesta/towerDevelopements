@@ -9,7 +9,21 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useToast } from "@/components/ui/use-toast";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Check, ChevronsUpDown } from "lucide-react";
+import { cn } from "@/lib/utils";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 const formSchema = z.object({
   full_name: z.string().min(2, "El nombre es muy corto"),
@@ -28,6 +42,7 @@ interface LeadCaptureProps {
 const LeadCapture = ({ onComplete }: LeadCaptureProps) => {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [open, setOpen] = useState(false);
   const [neighborhoods, setNeighborhoods] = useState<any[]>([]);
 
   useEffect(() => {
@@ -179,26 +194,58 @@ const LeadCapture = ({ onComplete }: LeadCaptureProps) => {
                   control={form.control}
                   name="preferred_zone"
                   render={({ field }) => (
-                    <FormItem className="space-y-3">
+                    <FormItem className="space-y-3 flex flex-col">
                       <FormLabel className="text-neutral-400 uppercase tracking-wider text-xs">¿Cuál es tu zona de preferencia?</FormLabel>
-                      <Select onValueChange={field.onChange} value={field.value || undefined}>
-                        <FormControl>
-                          <SelectTrigger className="bg-neutral-900 border-neutral-800 text-white focus:border-gold">
-                            <SelectValue placeholder="Seleccione un barrio" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent className="bg-neutral-900 border-neutral-800 text-white">
-                          {neighborhoods.length > 0 ? (
-                            neighborhoods.map((n) => (
-                              <SelectItem key={n.id} value={n.name} className="focus:bg-gold focus:text-black">
-                                {n.name}
-                              </SelectItem>
-                            ))
-                          ) : (
-                            <SelectItem value="none" disabled>No hay barrios cargados</SelectItem>
-                          )}
-                        </SelectContent>
-                      </Select>
+                      <Popover open={open} onOpenChange={setOpen}>
+                        <PopoverTrigger asChild>
+                          <FormControl>
+                            <Button
+                              variant="outline"
+                              role="combobox"
+                              className={cn(
+                                "w-full justify-between bg-neutral-900 border-neutral-800 text-white hover:bg-neutral-800 hover:text-white h-10 px-3",
+                                !field.value && "text-neutral-600"
+                              )}
+                            >
+                              {field.value
+                                ? neighborhoods.find(
+                                    (n) => n.name === field.value
+                                  )?.name
+                                : "Seleccione un barrio"}
+                              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                            </Button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-[--radix-popover-trigger-width] p-0 bg-neutral-900 border-neutral-800">
+                          <Command className="bg-neutral-900 text-white">
+                            <CommandInput placeholder="Buscar barrio..." className="h-9 text-white" />
+                            <CommandList>
+                              <CommandEmpty>No se encontró el barrio.</CommandEmpty>
+                              <CommandGroup>
+                                {neighborhoods.map((n) => (
+                                  <CommandItem
+                                    key={n.id}
+                                    value={n.name}
+                                    onSelect={() => {
+                                      form.setValue("preferred_zone", n.name);
+                                      setOpen(false);
+                                    }}
+                                    className="flex items-center gap-2 hover:bg-gold hover:text-black cursor-pointer text-white"
+                                  >
+                                    <Check
+                                      className={cn(
+                                        "h-4 w-4",
+                                        n.name === field.value ? "opacity-100" : "opacity-0"
+                                      )}
+                                    />
+                                    {n.name}
+                                  </CommandItem>
+                                ))}
+                              </CommandGroup>
+                            </CommandList>
+                          </Command>
+                        </PopoverContent>
+                      </Popover>
                       <FormMessage />
                     </FormItem>
                   )}

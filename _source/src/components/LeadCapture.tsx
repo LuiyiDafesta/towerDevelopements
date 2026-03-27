@@ -83,25 +83,9 @@ const LeadCapture = ({ onComplete }: LeadCaptureProps) => {
             Tu próximo departamento en CABA desde <span className="text-primary">USD 80.000</span>
           </h1>
 
-          <p className="text-lg text-neutral-400 mb-8 font-light leading-relaxed">
+          <p className="text-lg text-neutral-400 mb-12 font-light leading-relaxed">
             Nuestro staff de ventas te ayudará a encontrar lo que mejor se adapte a tu necesidad de vivienda, o inversión.
           </p>
-
-          <div className="mb-12 p-6 border-l-2 border-primary bg-neutral-900/50">
-            <h3 className="text-white font-bold mb-3 text-sm tracking-wider uppercase">Solo para clientes registrados:</h3>
-            <ul className="space-y-2">
-              {[
-                "Acceso a preventas exclusivas",
-                "Precios especiales de lanzamiento",
-                "Oportunidades fuera del mercado"
-              ].map((benefit) => (
-                <li key={benefit} className="flex items-center gap-2 text-neutral-400 text-sm">
-                  <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-                  {benefit}
-                </li>
-              ))}
-            </ul>
-          </div>
 
           <div className="grid grid-cols-2 gap-8 mb-12">
             <div className="p-6 border border-gold/20 rounded-xl bg-black/40">
@@ -128,6 +112,22 @@ const LeadCapture = ({ onComplete }: LeadCaptureProps) => {
       {/* Right Column: Form */}
       <div className="w-full md:w-1/2 bg-black p-8 md:p-16 flex flex-col justify-center">
         <div className="max-w-md mx-auto w-full">
+          <div className="mb-10 p-6 border-l-2 border-primary bg-neutral-900/50">
+            <h3 className="text-white font-bold mb-3 text-sm tracking-wider uppercase">Solo para clientes registrados:</h3>
+            <ul className="space-y-2">
+              {[
+                "Acceso a preventas exclusivas",
+                "Precios especiales de lanzamiento",
+                "Oportunidades fuera del mercado"
+              ].map((benefit) => (
+                <li key={benefit} className="flex items-center gap-2 text-neutral-400 text-sm">
+                  <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                  {benefit}
+                </li>
+              ))}
+            </ul>
+          </div>
+
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               <div className="space-y-6">

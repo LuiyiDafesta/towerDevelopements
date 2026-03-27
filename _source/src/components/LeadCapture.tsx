@@ -216,11 +216,18 @@ const LeadCapture = ({ onComplete }: LeadCaptureProps) => {
                             </Button>
                           </FormControl>
                         </PopoverTrigger>
-                        <PopoverContent className="w-[--radix-popover-trigger-width] p-0 bg-neutral-900 border-neutral-800">
-                          <Command className="bg-neutral-900 text-white">
-                            <CommandInput placeholder="Buscar barrio..." className="h-9 text-white" />
-                            <CommandList>
-                              <CommandEmpty>No se encontró el barrio.</CommandEmpty>
+                        <PopoverContent 
+                          className="w-[var(--radix-popover-trigger-width)] p-0 bg-neutral-900 border-neutral-800 z-[10001]"
+                          align="start"
+                        >
+                          <Command className="bg-neutral-900 text-white border-none">
+                            <CommandInput placeholder="Buscar barrio..." className="h-9 text-white border-neutral-800" />
+                            <CommandList className="max-h-[300px]">
+                              {neighborhoods.length === 0 && (
+                                <CommandEmpty className="py-6 text-center text-sm text-neutral-500">
+                                  No hay barrios cargados.
+                                </CommandEmpty>
+                              )}
                               <CommandGroup>
                                 {neighborhoods.map((n) => (
                                   <CommandItem
@@ -230,7 +237,7 @@ const LeadCapture = ({ onComplete }: LeadCaptureProps) => {
                                       form.setValue("preferred_zone", n.name);
                                       setOpen(false);
                                     }}
-                                    className="flex items-center gap-2 hover:bg-gold hover:text-black cursor-pointer text-white"
+                                    className="flex items-center gap-2 hover:bg-gold hover:text-black cursor-pointer text-white aria-selected:bg-gold aria-selected:text-black"
                                   >
                                     <Check
                                       className={cn(

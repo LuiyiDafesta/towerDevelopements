@@ -32,8 +32,13 @@ const LeadCapture = ({ onComplete }: LeadCaptureProps) => {
 
   useEffect(() => {
     const fetchNeighborhoods = async () => {
-      const { data } = await supabase.from("neighborhoods").select("*").order("name");
-      setNeighborhoods(data || []);
+      try {
+        const { data, error } = await supabase.from("neighborhoods").select("*").order("name");
+        if (error) throw error;
+        setNeighborhoods(data || []);
+      } catch (err) {
+        console.error("Error fetching neighborhoods:", err);
+      }
     };
     fetchNeighborhoods();
   }, []);
@@ -176,18 +181,22 @@ const LeadCapture = ({ onComplete }: LeadCaptureProps) => {
                   render={({ field }) => (
                     <FormItem className="space-y-3">
                       <FormLabel className="text-neutral-400 uppercase tracking-wider text-xs">¿Cuál es tu zona de preferencia?</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select onValueChange={field.onChange} value={field.value || undefined}>
                         <FormControl>
                           <SelectTrigger className="bg-neutral-900 border-neutral-800 text-white focus:border-gold">
                             <SelectValue placeholder="Seleccione un barrio" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent className="bg-neutral-900 border-neutral-800 text-white">
-                          {neighborhoods.map((n) => (
-                            <SelectItem key={n.id} value={n.name} className="focus:bg-gold focus:text-black">
-                              {n.name}
-                            </SelectItem>
-                          ))}
+                          {neighborhoods.length > 0 ? (
+                            neighborhoods.map((n) => (
+                              <SelectItem key={n.id} value={n.name} className="focus:bg-gold focus:text-black">
+                                {n.name}
+                              </SelectItem>
+                            ))
+                          ) : (
+                            <SelectItem value="none" disabled>No hay barrios cargados</SelectItem>
+                          )}
                         </SelectContent>
                       </Select>
                       <FormMessage />

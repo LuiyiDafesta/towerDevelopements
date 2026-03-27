@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useToast } from "@/components/ui/use-toast";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const formSchema = z.object({
   full_name: z.string().min(2, "El nombre es muy corto"),
@@ -27,6 +28,15 @@ interface LeadCaptureProps {
 const LeadCapture = ({ onComplete }: LeadCaptureProps) => {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [neighborhoods, setNeighborhoods] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchNeighborhoods = async () => {
+      const { data } = await supabase.from("neighborhoods").select("*").order("name");
+      setNeighborhoods(data || []);
+    };
+    fetchNeighborhoods();
+  }, []);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -66,20 +76,20 @@ const LeadCapture = ({ onComplete }: LeadCaptureProps) => {
   };
 
   return (
-    <div className="fixed inset-0 z-[9999] bg-black flex flex-col md:flex-row overflow-y-auto">
+    <div className="fixed inset-0 z-[9999] bg-black flex flex-col md:flex-row overflow-y-auto font-sans">
       {/* Left Column: Marketing & Info */}
-      <div className="w-full md:w-1/2 bg-neutral-900 p-8 md:p-16 flex flex-col justify-center border-b md:border-b-0 md:border-r border-gold/20">
-        <div className="max-w-md mx-auto md:mx-0">
-          <div className="flex items-center gap-2 mb-12">
-            <span className="text-3xl font-serif font-bold text-primary">Tower</span>
-            <span className="text-3xl font-serif font-light text-white">Developers</span>
+      <div className="w-full md:w-1/2 bg-neutral-900 p-8 md:p-16 flex flex-col justify-center items-center text-center border-b md:border-b-0 md:border-r border-gold/20">
+        <div className="max-w-md mx-auto">
+          <div className="flex items-center justify-center gap-2 mb-12">
+            <span className="text-3xl font-bold text-primary">Tower</span>
+            <span className="text-3xl font-light text-white">Developers</span>
           </div>
 
           <h2 className="text-primary text-sm font-medium tracking-[0.3em] uppercase mb-6">
             Inversiones Inmobiliarias
           </h2>
           
-          <h1 className="text-4xl md:text-5xl font-serif font-bold text-white mb-8 leading-tight">
+          <h1 className="text-4xl md:text-5xl font-bold text-white mb-8 leading-tight">
             Tu próximo departamento en CABA desde <span className="text-primary">USD 80.000</span>
           </h1>
 
@@ -88,14 +98,14 @@ const LeadCapture = ({ onComplete }: LeadCaptureProps) => {
           </p>
 
           <div className="grid grid-cols-2 gap-8 mb-12">
-            <div className="p-6 border border-gold/20 rounded-xl bg-black/40">
-              <div className="text-4xl font-serif font-bold text-primary mb-2">24</div>
+            <div className="p-6 border border-gold/20 rounded-xl bg-black/40 flex flex-col items-center">
+              <div className="text-4xl font-bold text-primary mb-2">24</div>
               <p className="text-xs text-neutral-500 uppercase tracking-widest leading-tight">
                 Edificios entregados por los socios
               </p>
             </div>
-            <div className="p-6 border border-gold/20 rounded-xl bg-black/40">
-              <div className="text-4xl font-serif font-bold text-primary mb-2">1.791</div>
+            <div className="p-6 border border-gold/20 rounded-xl bg-black/40 flex flex-col items-center">
+              <div className="text-4xl font-bold text-primary mb-2">1.791</div>
               <p className="text-xs text-neutral-500 uppercase tracking-widest leading-tight">
                 Departamentos entregados en CABA
               </p>
@@ -166,24 +176,20 @@ const LeadCapture = ({ onComplete }: LeadCaptureProps) => {
                   render={({ field }) => (
                     <FormItem className="space-y-3">
                       <FormLabel className="text-neutral-400 uppercase tracking-wider text-xs">¿Cuál es tu zona de preferencia?</FormLabel>
-                      <FormControl>
-                        <RadioGroup
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                          className="grid grid-cols-2 gap-2"
-                        >
-                          {["Núñez", "Saavedra", "Palermo", "Recoleta"].map((opt) => (
-                            <FormItem key={opt} className="flex items-center space-x-2 space-y-0">
-                              <FormControl>
-                                <RadioGroupItem value={opt} className="border-gold text-primary" />
-                              </FormControl>
-                              <FormLabel className="font-normal text-white text-sm cursor-pointer">
-                                {opt}
-                              </FormLabel>
-                            </FormItem>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger className="bg-neutral-900 border-neutral-800 text-white focus:border-gold">
+                            <SelectValue placeholder="Seleccione un barrio" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent className="bg-neutral-900 border-neutral-800 text-white">
+                          {neighborhoods.map((n) => (
+                            <SelectItem key={n.id} value={n.name} className="focus:bg-gold focus:text-black">
+                              {n.name}
+                            </SelectItem>
                           ))}
-                        </RadioGroup>
-                      </FormControl>
+                        </SelectContent>
+                      </Select>
                       <FormMessage />
                     </FormItem>
                   )}

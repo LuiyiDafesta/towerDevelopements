@@ -15,6 +15,7 @@ import AdminProperties from "./pages/admin/Properties.tsx";
 import AdminNeighborhoods from "./pages/admin/Neighborhoods.tsx";
 import PropertyForm from "./pages/admin/PropertyForm.tsx";
 import LeadCapture from "./components/LeadCapture.tsx";
+import WhatsAppButton from "./components/WhatsAppButton";
 
 const queryClient = new QueryClient();
 
@@ -46,6 +47,7 @@ const App = () => {
         <Toaster />
         <Sonner />
         <BrowserRouter>
+          <WhatsAppButton />
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/propiedades" element={<Properties />} />

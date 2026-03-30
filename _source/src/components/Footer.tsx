@@ -21,18 +21,37 @@ const Footer = () => {
           ))}
         </div>
 
-        <div className="border-t border-border pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <span className="text-xl font-serif font-bold text-primary">Tower</span>
-            <span className="text-xl font-serif font-light text-foreground">Developers</span>
+        <div className="border-t border-border pt-8 flex flex-col md:flex-row items-center justify-between gap-8">
+          <div className="flex flex-col gap-4">
+            <div className="flex items-center gap-2">
+              <span className="text-xl font-serif font-bold text-primary">Tower</span>
+              <span className="text-xl font-serif font-light text-foreground">Developers</span>
+            </div>
+            <div className="text-xs text-muted-foreground tracking-widest uppercase font-sans">
+              Más de 25 años de experiencia
+            </div>
           </div>
-          <div className="flex gap-6">
-            <Link to="/" className="text-sm text-muted-foreground hover:text-primary transition-colors">Inicio</Link>
-            <Link to="/propiedades" className="text-sm text-muted-foreground hover:text-primary transition-colors">Propiedades</Link>
+          
+          <div className="flex flex-col md:flex-row gap-8 text-center md:text-left">
+            <div>
+              <p className="text-[10px] uppercase font-bold tracking-[0.2em] text-white/40 mb-1">Contacto</p>
+              <a href="https://wa.me/5491165717856" target="_blank" rel="noreferrer" className="text-sm text-foreground hover:text-primary transition-colors">+54 9 11 6571 7856</a>
+            </div>
+            <div>
+              <p className="text-[10px] uppercase font-bold tracking-[0.2em] text-white/40 mb-1">Email</p>
+              <a href="mailto:info@towerdevelopers.com" className="text-sm text-foreground hover:text-primary transition-colors">info@towerdevelopers.com</a>
+            </div>
           </div>
-          <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} Tower Developers. Todos los derechos reservados.
-          </p>
+
+          <div className="flex flex-col items-center md:items-end gap-4">
+            <div className="flex gap-6">
+              <Link to="/" className="text-sm text-muted-foreground hover:text-primary transition-colors">Inicio</Link>
+              <Link to="/propiedades" className="text-sm text-muted-foreground hover:text-primary transition-colors">Propiedades</Link>
+            </div>
+            <p className="text-[10px] text-muted-foreground uppercase tracking-widest">
+              © {new Date().getFullYear()} Tower Developers.
+            </p>
+          </div>
         </div>
       </div>
     </footer>

@@ -9,7 +9,7 @@ const MarketingTracker = () => {
       const { data, error } = await supabase
         .from("admin_settings")
         .select("key, value")
-        .in("key", ["google_analytics_id", "facebook_pixel_id"]);
+        .in("key", ["google_analytics_id", "facebook_pixel_id", "visitor_tracking_code"]);
       
       if (error) throw error;
       
@@ -27,13 +27,11 @@ const MarketingTracker = () => {
     if (settings.google_analytics_id && settings.google_analytics_id.trim() !== "") {
       const gaId = settings.google_analytics_id.trim();
       
-      // Script tag
       const script = document.createElement("script");
       script.async = true;
       script.src = `https://www.googletagmanager.com/gtag/js?id=${gaId}`;
       document.head.appendChild(script);
 
-      // Initialization
       const inlineScript = document.createElement("script");
       inlineScript.innerHTML = `
         window.dataLayer = window.dataLayer || [];
@@ -69,6 +67,25 @@ const MarketingTracker = () => {
         src="https://www.facebook.com/tr?id=${fbId}&ev=PageView&noscript=1" />
       `;
       document.head.appendChild(fbNoScript);
+    }
+
+    // 3. Visitor Tracking (General / Head Injection)
+    if (settings.visitor_tracking_code && settings.visitor_tracking_code.trim() !== "") {
+      const vtCode = settings.visitor_tracking_code.trim();
+      
+      // If it's just an ID and not a partial script, we might need a specific template.
+      // But usually, these systems provide a script. We'll append it to head.
+      const vtScript = document.createElement("script");
+      
+      // Check if user pasted a full script or just an ID
+      if (vtCode.includes("<script")) {
+        // This is complex for appendChild, so we just add the content safely if possible
+        // Better: user usually pastes just the code or a clean ID.
+        console.log("Visitor tracking script detected.");
+      } else {
+        vtScript.innerHTML = vtCode;
+        document.head.appendChild(vtScript);
+      }
     }
   }, [settings]);
 

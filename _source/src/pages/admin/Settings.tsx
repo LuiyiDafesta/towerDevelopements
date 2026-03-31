@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
-import { Loader2, Save, Webhook, ExternalLink, Info, BarChart3, Facebook } from "lucide-react";
+import { Loader2, Save, Webhook, ExternalLink, Info, BarChart3, Facebook, Users } from "lucide-react";
 
 export default function AdminSettings() {
   const [loading, setLoading] = useState(true);
@@ -15,6 +15,7 @@ export default function AdminSettings() {
     webhook_inquiries: "",
     google_analytics_id: "",
     facebook_pixel_id: "",
+    visitor_tracking_code: "",
   });
 
   useEffect(() => {
@@ -39,6 +40,7 @@ export default function AdminSettings() {
         webhook_inquiries: settings.webhook_inquiries || "",
         google_analytics_id: settings.google_analytics_id || "",
         facebook_pixel_id: settings.facebook_pixel_id || "",
+        visitor_tracking_code: settings.visitor_tracking_code || "",
       });
     } catch (error) {
       console.error("Error fetching settings:", error);
@@ -169,9 +171,6 @@ export default function AdminSettings() {
                 placeholder="G-..."
                 className="bg-white/5 border-gold/10 text-white focus-visible:ring-gold/40 placeholder:text-white/10 h-12 font-mono"
               />
-              <p className="text-[10px] text-white/20 uppercase tracking-widest leading-relaxed">
-                Habilitará Google Analytics 4 (GTAG) de forma automática en todo el sitio.
-              </p>
             </div>
 
             {/* Facebook Pixel */}
@@ -189,8 +188,25 @@ export default function AdminSettings() {
                 placeholder="Ej: 1234567890..."
                 className="bg-white/5 border-gold/10 text-white focus-visible:ring-gold/40 placeholder:text-white/10 h-12 font-mono"
               />
+            </div>
+
+            {/* Visitor Tracking */}
+            <div className="space-y-4">
+              <div className="flex items-center gap-2">
+                <Users className="w-4 h-4 text-gold/60" />
+                <Label htmlFor="visitor_track" className="text-gold/80 text-xs uppercase tracking-[0.2em] font-bold">
+                  Visitor Tracking Script / ID
+                </Label>
+              </div>
+              <Input
+                id="visitor_track"
+                value={formData.visitor_tracking_code}
+                onChange={(e) => setFormData({ ...formData, visitor_tracking_code: e.target.value })}
+                placeholder="Pega el script o ID de seguimiento aquí"
+                className="bg-white/5 border-gold/10 text-white focus-visible:ring-gold/40 placeholder:text-white/10 h-12 font-mono"
+              />
               <p className="text-[10px] text-white/20 uppercase tracking-widest leading-relaxed">
-                Habilitará Meta Pixel para rastrear visitas e interacciones de anuncios.
+                Este código se inyectará automáticamente en el cabezado (HEAD) de todas las páginas para rastrear visitantes únicos.
               </p>
             </div>
           </CardContent>

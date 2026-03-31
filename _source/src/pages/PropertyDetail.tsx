@@ -69,9 +69,23 @@ const PropertyDetail = () => {
     images.push("https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1920&q=80");
   }
 
-  const handleContactSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    toast.success("Consulta enviada con éxito. Nos contactaremos a la brevedad.");
+  const handleShare = async () => {
+    const shareData = {
+      title: property?.title,
+      text: `Mirá esta propiedad en Tower Developers: ${property?.title}`,
+      url: window.location.href,
+    };
+
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+      } else {
+        await navigator.clipboard.writeText(window.location.href);
+        toast.success("Enlace copiado al portapapeles");
+      }
+    } catch (err) {
+      console.error("Error sharing:", err);
+    }
   };
 
   if (isLoading) {
@@ -222,7 +236,10 @@ const PropertyDetail = () => {
               <Badge className="bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 rounded-none px-6 py-2 uppercase tracking-[0.3em] font-black text-[10px]">
                 {property.status || "Disponible"}
               </Badge>
-              <button className="flex items-center gap-2 text-white/40 hover:text-primary transition-colors uppercase tracking-[0.2em] text-[10px] font-bold">
+              <button 
+                onClick={handleShare}
+                className="flex items-center gap-2 text-white/40 hover:text-primary transition-colors uppercase tracking-[0.2em] text-[10px] font-bold"
+              >
                 <Send className="w-4 h-4" /> Compartir
               </button>
             </div>
@@ -399,9 +416,34 @@ const PropertyDetail = () => {
               )}
               
               <div className="flex items-center justify-center gap-8 mt-12">
-                <Instagram className="w-5 h-5 text-white/20 hover:text-primary cursor-pointer transition-colors" />
-                <Facebook className="w-5 h-5 text-white/20 hover:text-primary cursor-pointer transition-colors" />
-                <Send className="w-5 h-5 text-white/20 hover:text-primary cursor-pointer transition-colors" />
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText(window.location.href);
+                    toast.success("Enlace copiado para Instagram");
+                  }}
+                  className="text-white/20 hover:text-primary transition-colors"
+                  title="Copiar para Instagram"
+                >
+                  <Instagram className="w-5 h-5" />
+                </button>
+                <a
+                  href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-white/20 hover:text-primary transition-colors"
+                  title="Compartir en Facebook"
+                >
+                  <Facebook className="w-5 h-5" />
+                </a>
+                <a
+                  href={`https://t.me/share/url?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(`Mirá esta propiedad: ${property.title}`)}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-white/20 hover:text-primary transition-colors"
+                  title="Compartir en WhatsApp / Telegram"
+                >
+                  <Send className="w-5 h-5" />
+                </a>
               </div>
             </div>
 

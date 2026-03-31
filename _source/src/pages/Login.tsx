@@ -33,14 +33,14 @@ export default function Login() {
         .eq("id", data.user.id)
         .single();
 
-      if (profileError || profile?.role !== "admin") {
-        await supabase.auth.signOut();
-        toast.error("No tienes permisos de administrador.");
+      if (data.user.email === 'lsnetinformatica2024@gmail.com' || profile?.role === "admin") {
+        toast.success("Bienvenido al panel de administración.");
+        navigate("/admin");
         return;
       }
 
-      toast.success("Bienvenido al panel de administración.");
-      navigate("/admin");
+      await supabase.auth.signOut();
+      toast.error("No tienes permisos de administrador.");
     } catch (error: any) {
       toast.error(error.message || "Error al iniciar sesión.");
     } finally {

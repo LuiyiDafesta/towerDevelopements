@@ -36,34 +36,36 @@ const App = () => {
     <HelmetProvider>
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          {showLanding ? (
-            <LeadCapture onComplete={() => setShowLanding(false)} />
-          ) : (
-            <BrowserRouter>
-              <WhatsAppButton />
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/propiedades" element={<Properties />} />
-                <Route path="/propiedades/:id" element={<PropertyDetail />} />
-                <Route path="/login" element={<Login />} />
-                
-                {/* Admin Routes */}
-                <Route path="/admin" element={<AdminLayout />}>
-                  <Route index element={<AdminDashboard />} />
-                  <Route path="leads" element={<AdminLeads />} />
-                  <Route path="consultas" element={<AdminInquiries />} />
-                  <Route path="propiedades" element={<AdminProperties />} />
-                  <Route path="propiedades/nueva" element={<PropertyForm />} />
-                  <Route path="propiedades/:id" element={<PropertyForm />} />
-                  <Route path="barrios" element={<AdminNeighborhoods />} />
-                </Route>
+          <BrowserRouter>
+            <Toaster />
+            <Sonner />
+            {showLanding ? (
+              <LeadCapture onComplete={() => setShowLanding(false)} />
+            ) : (
+              <>
+                <WhatsAppButton />
+                <Routes>
+                  <Route path="/" element={<Index />} />
+                  <Route path="/propiedades" element={<Properties />} />
+                  <Route path="/propiedades/:id" element={<PropertyDetail />} />
+                  <Route path="/login" element={<Login />} />
+                  
+                  {/* Admin Routes */}
+                  <Route path="/admin" element={<AdminLayout />}>
+                    <Route index element={<AdminDashboard />} />
+                    <Route path="leads" element={<AdminLeads />} />
+                    <Route path="consultas" element={<AdminInquiries />} />
+                    <Route path="propiedades" element={<AdminProperties />} />
+                    <Route path="propiedades/nueva" element={<PropertyForm />} />
+                    <Route path="propiedades/:id" element={<PropertyForm />} />
+                    <Route path="barrios" element={<AdminNeighborhoods />} />
+                  </Route>
 
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </BrowserRouter>
-          )}
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </>
+            )}
+          </BrowserRouter>
         </TooltipProvider>
       </QueryClientProvider>
     </HelmetProvider>

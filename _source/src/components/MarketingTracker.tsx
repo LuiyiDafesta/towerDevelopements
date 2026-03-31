@@ -31,7 +31,7 @@ const MarketingTracker = () => {
     },
   });
 
-  // 1. Initial Script Injection (once settings are loaded)
+  // 1. Initial Script Injection
   useEffect(() => {
     if (!settings) return;
 
@@ -74,24 +74,40 @@ const MarketingTracker = () => {
       document.head.appendChild(fbScript);
     }
 
-    // Visitor Tracking
+    // 3. Visitor Tracking (Improved Injection for raw HTML/Scripts)
     if (settings.visitor_tracking_code && settings.visitor_tracking_code.trim() !== "") {
       const vtCode = settings.visitor_tracking_code.trim();
-      const vtScript = document.createElement("script");
-      if (!vtCode.includes("<script")) {
+      
+      // If code contains script tags, we parse them and inject them properly
+      if (vtCode.includes("<script")) {
+        const div = document.createElement("div");
+        div.innerHTML = vtCode;
+        const scripts = Array.from(div.querySelectorAll("script"));
+        
+        scripts.forEach((oldScript) => {
+          const newScript = document.createElement("script");
+          // Copy all attributes (src, async, defer, etc)
+          Array.from(oldScript.attributes).forEach((attr) => {
+            newScript.setAttribute(attr.name, attr.value);
+          });
+          // Copy content
+          newScript.innerHTML = oldScript.innerHTML;
+          document.head.appendChild(newScript);
+        });
+      } else {
+        const vtScript = document.createElement("script");
         vtScript.innerHTML = vtCode;
         document.head.appendChild(vtScript);
       }
     }
   }, [settings]);
 
-  // 2. Route Change Tracking (Manual PageView triggers for SPA)
+  // 2. Route Change Tracking
   useEffect(() => {
     if (!settings) return;
 
     const url = window.location.origin + location.pathname + location.search;
 
-    // Manual Google Analytics Hit
     if (window.gtag && settings.google_analytics_id) {
       window.gtag('config', settings.google_analytics_id, {
         page_location: url,
@@ -100,7 +116,6 @@ const MarketingTracker = () => {
       });
     }
 
-    // Manual Facebook Pixel Hit
     if (window.fbq && settings.facebook_pixel_id) {
       window.fbq('track', 'PageView');
     }

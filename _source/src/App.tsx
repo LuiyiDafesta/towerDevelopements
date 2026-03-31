@@ -8,6 +8,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import Index from "./pages/Index.tsx";
 import Properties from "./pages/Properties.tsx";
 import PropertyDetail from "./pages/PropertyDetail.tsx";
+import AboutUs from "./pages/AboutUs.tsx";
+import Legal from "./pages/Legal.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import Login from "./pages/Login.tsx";
 import AdminLayout from "./components/admin/AdminLayout.tsx";
@@ -48,6 +50,8 @@ const App = () => {
                   <Route path="/" element={<Index />} />
                   <Route path="/propiedades" element={<Properties />} />
                   <Route path="/propiedades/:id" element={<PropertyDetail />} />
+                  <Route path="/nosotros" element={<AboutUs />} />
+                  <Route path="/legales" element={<Legal />} />
                   <Route path="/login" element={<Login />} />
                   
                   {/* Admin Routes */}

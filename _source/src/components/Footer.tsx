@@ -44,9 +44,11 @@ const Footer = () => {
           </div>
 
           <div className="flex flex-col items-center md:items-end gap-4">
-            <div className="flex gap-6">
+            <div className="flex flex-wrap gap-4 md:gap-6 justify-center md:justify-end">
               <Link to="/" className="text-sm text-muted-foreground hover:text-primary transition-colors">Inicio</Link>
+              <Link to="/nosotros" className="text-sm text-muted-foreground hover:text-primary transition-colors">Nosotros</Link>
               <Link to="/propiedades" className="text-sm text-muted-foreground hover:text-primary transition-colors">Propiedades</Link>
+              <Link to="/legales" className="text-sm text-muted-foreground hover:text-primary transition-colors">Legales</Link>
             </div>
             <p className="text-[10px] text-muted-foreground uppercase tracking-widest">
               © {new Date().getFullYear()} Tower Developers.

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { HelmetProvider } from "react-helmet-async";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -30,46 +31,40 @@ const App = () => {
 
   if (showLanding === null) return null; // Prevent flicker
 
-  if (showLanding) {
-    return (
+  return (
+    <HelmetProvider>
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
           <Toaster />
           <Sonner />
-          <LeadCapture onComplete={() => setShowLanding(false)} />
+          {showLanding ? (
+            <LeadCapture onComplete={() => setShowLanding(false)} />
+          ) : (
+            <BrowserRouter>
+              <WhatsAppButton />
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/propiedades" element={<Properties />} />
+                <Route path="/propiedades/:id" element={<PropertyDetail />} />
+                <Route path="/login" element={<Login />} />
+                
+                {/* Admin Routes */}
+                <Route path="/admin" element={<AdminLayout />}>
+                  <Route index element={<AdminDashboard />} />
+                  <Route path="leads" element={<AdminLeads />} />
+                  <Route path="propiedades" element={<AdminProperties />} />
+                  <Route path="propiedades/nueva" element={<PropertyForm />} />
+                  <Route path="propiedades/:id" element={<PropertyForm />} />
+                  <Route path="barrios" element={<AdminNeighborhoods />} />
+                </Route>
+
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </BrowserRouter>
+          )}
         </TooltipProvider>
       </QueryClientProvider>
-    );
-  }
-
-  return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <WhatsAppButton />
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/propiedades" element={<Properties />} />
-            <Route path="/propiedades/:id" element={<PropertyDetail />} />
-            <Route path="/login" element={<Login />} />
-            
-            {/* Admin Routes */}
-            <Route path="/admin" element={<AdminLayout />}>
-              <Route index element={<AdminDashboard />} />
-              <Route path="leads" element={<AdminLeads />} />
-              <Route path="propiedades" element={<AdminProperties />} />
-              <Route path="propiedades/nueva" element={<PropertyForm />} />
-              <Route path="propiedades/:id" element={<PropertyForm />} />
-              <Route path="barrios" element={<AdminNeighborhoods />} />
-            </Route>
-
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
-    </QueryClientProvider>
+    </HelmetProvider>
   );
 };
 

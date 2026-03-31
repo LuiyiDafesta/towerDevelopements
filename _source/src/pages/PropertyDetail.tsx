@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import Navbar from "@/components/Navbar";
+import SEO from "@/components/SEO";
 import Footer from "@/components/Footer";
 import PropertyCard from "@/components/PropertyCard";
 import { Badge } from "@/components/ui/badge";
@@ -92,6 +93,13 @@ const PropertyDetail = () => {
 
   return (
     <div className="min-h-screen bg-black text-white font-sans overflow-x-hidden">
+      <SEO 
+        title={property.title} 
+        description={property.description?.substring(0, 160) + "..."}
+        image={property.image_url || "/og-image.png"}
+        url={`https://towerdevelopers.com/propiedades/${property.id}`}
+        type="article"
+      />
       <Navbar />
 
       <div className="pt-28 pb-20">

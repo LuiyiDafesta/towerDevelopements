@@ -13,6 +13,7 @@ import AdminLayout from "./components/admin/AdminLayout.tsx";
 import AdminDashboard from "./pages/admin/Dashboard.tsx";
 import AdminProperties from "./pages/admin/Properties.tsx";
 import AdminNeighborhoods from "./pages/admin/Neighborhoods.tsx";
+import AdminLeads from "./pages/admin/Leads.tsx";
 import PropertyForm from "./pages/admin/PropertyForm.tsx";
 import LeadCapture from "./components/LeadCapture.tsx";
 import WhatsAppButton from "./components/WhatsAppButton";
@@ -57,6 +58,7 @@ const App = () => {
             {/* Admin Routes */}
             <Route path="/admin" element={<AdminLayout />}>
               <Route index element={<AdminDashboard />} />
+              <Route path="leads" element={<AdminLeads />} />
               <Route path="propiedades" element={<AdminProperties />} />
               <Route path="propiedades/nueva" element={<PropertyForm />} />
               <Route path="propiedades/:id" element={<PropertyForm />} />

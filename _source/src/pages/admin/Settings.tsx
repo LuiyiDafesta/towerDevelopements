@@ -5,14 +5,16 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
-import { Loader2, Save, Webhook, ExternalLink, Info } from "lucide-react";
+import { Loader2, Save, Webhook, ExternalLink, Info, BarChart3, Facebook } from "lucide-react";
 
 export default function AdminSettings() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [webhooks, setWebhooks] = useState({
+  const [formData, setFormData] = useState({
     webhook_leads: "",
     webhook_inquiries: "",
+    google_analytics_id: "",
+    facebook_pixel_id: "",
   });
 
   useEffect(() => {
@@ -32,9 +34,11 @@ export default function AdminSettings() {
         settings[item.key] = item.value || "";
       });
 
-      setWebhooks({
+      setFormData({
         webhook_leads: settings.webhook_leads || "",
         webhook_inquiries: settings.webhook_inquiries || "",
+        google_analytics_id: settings.google_analytics_id || "",
+        facebook_pixel_id: settings.facebook_pixel_id || "",
       });
     } catch (error) {
       console.error("Error fetching settings:", error);
@@ -49,7 +53,7 @@ export default function AdminSettings() {
     setSaving(true);
 
     try {
-      const updates = Object.entries(webhooks).map(([key, value]) => ({
+      const updates = Object.entries(formData).map(([key, value]) => ({
         key,
         value,
         updated_at: new Date().toISOString(),
@@ -84,10 +88,12 @@ export default function AdminSettings() {
     <div className="space-y-8 animate-in fade-in duration-500 max-w-4xl">
       <div>
         <h1 className="text-3xl font-playfair text-white tracking-wide">Configuración del Sistema</h1>
-        <p className="text-white/40 mt-2 font-inter">Gestiona las integraciones y webhooks externos para automatizar tu flujo de trabajo.</p>
+        <p className="text-white/40 mt-2 font-inter">Gestiona las integraciones, webhooks y herramientas de marketing para Tower Developers.</p>
       </div>
 
-      <form onSubmit={handleSave} className="space-y-6">
+      <form onSubmit={handleSave} className="space-y-8">
+        
+        {/* Webhooks Section */}
         <Card className="bg-black/40 border-gold/10 backdrop-blur-sm overflow-hidden">
           <CardHeader className="bg-gold/5 border-b border-gold/10">
             <div className="flex items-center gap-3">
@@ -95,62 +101,97 @@ export default function AdminSettings() {
                 <Webhook className="w-5 h-5 text-gold" />
               </div>
               <div>
-                <CardTitle className="text-xl text-white font-serif">Webhooks de Integración (n8n / CRM)</CardTitle>
+                <CardTitle className="text-xl text-white font-serif">Integración Automática (CRM)</CardTitle>
                 <CardDescription className="text-white/40 text-xs uppercase tracking-widest mt-1">
-                  Configura las URLs donde se enviarán los datos en tiempo real.
+                  Configura las URLs de n8n para recibir leads y consultas.
                 </CardDescription>
               </div>
             </div>
           </CardHeader>
           <CardContent className="p-8 space-y-8">
             <div className="grid gap-8">
-              {/* Leads Webhook */}
               <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <Label htmlFor="webhook_leads" className="text-gold/80 text-xs uppercase tracking-[0.2em] font-bold">
-                    Webhook para Captura de Leads
-                  </Label>
-                  <a 
-                    href="https://n8n.io" 
-                    target="_blank" 
-                    rel="noreferrer" 
-                    className="text-[10px] text-white/20 hover:text-gold flex items-center gap-1 transition-colors uppercase tracking-widest font-black"
-                  >
-                    n8n Documentation <ExternalLink className="w-3 h-3" />
-                  </a>
-                </div>
+                <Label htmlFor="webhook_leads" className="text-gold/80 text-xs uppercase tracking-[0.2em] font-bold">
+                  Webhook para Leads
+                </Label>
                 <Input
                   id="webhook_leads"
-                  value={webhooks.webhook_leads}
-                  onChange={(e) => setWebhooks({ ...webhooks, webhook_leads: e.target.value })}
-                  placeholder="https://tu-instancia.n8n.cloud/webhook/..."
+                  value={formData.webhook_leads}
+                  onChange={(e) => setFormData({ ...formData, webhook_leads: e.target.value })}
+                  placeholder="https://n8n.tu-instancia.com/webhook/..."
                   className="bg-white/5 border-gold/10 text-white focus-visible:ring-gold/40 placeholder:text-white/10 h-12"
                 />
-                <p className="text-[11px] text-white/30 flex items-start gap-2 italic">
-                  <Info className="w-3 h-3 mt-0.5 shrink-0 text-gold/40" />
-                  Se disparará cada vez que un nuevo visitante complete el formulario de entrada (Lead Capture). 
-                  Payload: Full Lead Object (Nombre, Email, Teléfono, Zona, Propósito, Plazo).
-                </p>
               </div>
-
-              {/* Inquiries Webhook */}
               <div className="space-y-4">
                 <Label htmlFor="webhook_inquiries" className="text-gold/80 text-xs uppercase tracking-[0.2em] font-bold">
-                  Webhook para Consultas de Propiedades
+                  Webhook para Consultas
                 </Label>
                 <Input
                   id="webhook_inquiries"
-                  value={webhooks.webhook_inquiries}
-                  onChange={(e) => setWebhooks({ ...webhooks, webhook_inquiries: e.target.value })}
-                  placeholder="https://tu-instancia.n8n.cloud/webhook/..."
+                  value={formData.webhook_inquiries}
+                  onChange={(e) => setFormData({ ...formData, webhook_inquiries: e.target.value })}
+                  placeholder="https://n8n.tu-instancia.com/webhook/..."
                   className="bg-white/5 border-gold/10 text-white focus-visible:ring-gold/40 placeholder:text-white/10 h-12"
                 />
-                <p className="text-[11px] text-white/30 flex items-start gap-2 italic">
-                  <Info className="w-3 h-3 mt-0.5 shrink-0 text-gold/40" />
-                  Se disparará cuando un cliente consulte por una propiedad específica. 
-                  Payload: Contacto del cliente + Metadatos de la propiedad (ID, Título, Ref, Precio).
-                </p>
               </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Marketing & Tracking Section */}
+        <Card className="bg-black/40 border-gold/10 backdrop-blur-sm overflow-hidden">
+          <CardHeader className="bg-gold/5 border-b border-gold/10">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-gold/10 rounded-lg">
+                <BarChart3 className="w-5 h-5 text-gold" />
+              </div>
+              <div>
+                <CardTitle className="text-xl text-white font-serif">Marketing & Tracking</CardTitle>
+                <CardDescription className="text-white/40 text-xs uppercase tracking-widest mt-1">
+                  Mide el éxito de tus campañas pegando tus IDs de seguimiento.
+                </CardDescription>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="p-8 space-y-10">
+            {/* Google Analytics */}
+            <div className="space-y-4">
+              <div className="flex items-center gap-2">
+                <BarChart3 className="w-4 h-4 text-gold/60" />
+                <Label htmlFor="ga_id" className="text-gold/80 text-xs uppercase tracking-[0.2em] font-bold">
+                  Google Analytics ID (G-XXXXXXXXXX)
+                </Label>
+              </div>
+              <Input
+                id="ga_id"
+                value={formData.google_analytics_id}
+                onChange={(e) => setFormData({ ...formData, google_analytics_id: e.target.value })}
+                placeholder="G-..."
+                className="bg-white/5 border-gold/10 text-white focus-visible:ring-gold/40 placeholder:text-white/10 h-12 font-mono"
+              />
+              <p className="text-[10px] text-white/20 uppercase tracking-widest leading-relaxed">
+                Habilitará Google Analytics 4 (GTAG) de forma automática en todo el sitio.
+              </p>
+            </div>
+
+            {/* Facebook Pixel */}
+            <div className="space-y-4">
+              <div className="flex items-center gap-2">
+                <Facebook className="w-4 h-4 text-gold/60" />
+                <Label htmlFor="fb_id" className="text-gold/80 text-xs uppercase tracking-[0.2em] font-bold">
+                  Facebook Pixel ID
+                </Label>
+              </div>
+              <Input
+                id="fb_id"
+                value={formData.facebook_pixel_id}
+                onChange={(e) => setFormData({ ...formData, facebook_pixel_id: e.target.value })}
+                placeholder="Ej: 1234567890..."
+                className="bg-white/5 border-gold/10 text-white focus-visible:ring-gold/40 placeholder:text-white/10 h-12 font-mono"
+              />
+              <p className="text-[10px] text-white/20 uppercase tracking-widest leading-relaxed">
+                Habilitará Meta Pixel para rastrear visitas e interacciones de anuncios.
+              </p>
             </div>
           </CardContent>
         </Card>
@@ -159,19 +200,10 @@ export default function AdminSettings() {
           <Button 
             type="submit" 
             disabled={saving}
-            className="bg-gold hover:bg-gold/80 text-black font-bold h-12 px-10 transition-all duration-300 shadow-lg shadow-gold/10 flex items-center gap-2"
+            className="bg-gold hover:bg-gold/80 text-black font-black h-12 px-12 transition-all duration-300 shadow-xl shadow-gold/10 flex items-center gap-2 uppercase tracking-widest text-xs"
           >
-            {saving ? (
-              <>
-                <Loader2 className="w-4 h-4 animate-spin" />
-                Guardando...
-              </>
-            ) : (
-              <>
-                <Save className="w-4 h-4" />
-                GUARDAR CONFIGURACIÓN
-              </>
-            )}
+            {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+            Guardar Configuración
           </Button>
         </div>
       </form>

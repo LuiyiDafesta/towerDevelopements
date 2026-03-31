@@ -22,6 +22,7 @@ import AdminSettings from "./pages/admin/Settings.tsx";
 import PropertyForm from "./pages/admin/PropertyForm.tsx";
 import LeadCapture from "./components/LeadCapture.tsx";
 import WhatsAppButton from "./components/WhatsAppButton";
+import MarketingTracker from "./components/MarketingTracker";
 
 const queryClient = new QueryClient();
 
@@ -48,6 +49,7 @@ const App = () => {
     <HelmetProvider>
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
+          <MarketingTracker />
           <BrowserRouter>
             <Toaster />
             <Sonner />

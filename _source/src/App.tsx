@@ -29,10 +29,19 @@ const App = () => {
 
   useEffect(() => {
     const isCaptured = localStorage.getItem("lead_captured");
-    setShowLanding(isCaptured !== "true");
+    const isAdminPath = window.location.pathname.startsWith("/admin") || window.location.pathname.startsWith("/login");
+    
+    if (isCaptured === "true" || isAdminPath) {
+      setShowLanding(false);
+    } else {
+      setShowLanding(true);
+    }
   }, []);
 
   if (showLanding === null) return null; // Prevent flicker
+
+  const isAdminPath = window.location.pathname.startsWith("/admin") || window.location.pathname.startsWith("/login");
+  const displayLanding = showLanding && !isAdminPath;
 
   return (
     <HelmetProvider>
@@ -41,7 +50,7 @@ const App = () => {
           <BrowserRouter>
             <Toaster />
             <Sonner />
-            {showLanding ? (
+            {displayLanding ? (
               <LeadCapture onComplete={() => setShowLanding(false)} />
             ) : (
               <>

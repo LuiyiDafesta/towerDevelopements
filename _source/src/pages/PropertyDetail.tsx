@@ -287,101 +287,116 @@ const PropertyDetail = () => {
                 </p>
               </div>
 
-              <div className="bg-white/5 border border-white/10 p-10 backdrop-blur-md relative">
-                <div className="absolute -top-px left-8 right-8 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
-                
-                <h3 className="text-lg font-serif font-bold text-white mb-2 tracking-tight">Consultá ahora</h3>
-                <p className="text-[10px] text-white/40 uppercase tracking-[0.2em] mb-10">Te respondemos a la brevedad.</p>
-
-                <form 
-                  key={userInfo.email || "empty"}
-                  onSubmit={async (e) => {
-                    e.preventDefault();
-                    const form = e.target as HTMLFormElement;
-                    const formData = new FormData(form);
-                    
-                    const nombre = formData.get("nombre") as string;
-                    const email = formData.get("email") as string;
-                    const telefono = formData.get("telefono") as string;
-                    const consulta = formData.get("consulta") as string;
-
-                    try {
-                      const { error } = await supabase.from("inquiries").insert({
-                        full_name: nombre,
-                        email: email,
-                        phone: telefono,
-                        property_id: property.id,
-                        message: consulta
-                      });
-
-                      if (error) throw error;
-
-                      toast.success("Consulta enviada con éxito. Nos contactaremos a la brevedad.");
-                      form.reset();
-                    } catch (error) {
-                      console.error("Error saving inquiry:", error);
-                      toast.error("Hubo un error al enviar la consulta. Por favor, intenta de nuevo.");
-                    }
-                  }} 
-                  className="space-y-8"
-                >
-                  <div className="space-y-6">
-                    <div className="group">
-                      <Input 
-                        name="nombre"
-                        required
-                        placeholder="Tu nombre *" 
-                        defaultValue={userInfo.full_name}
-                        className="bg-transparent border-0 border-b border-white/10 rounded-none focus-visible:ring-0 focus-visible:border-primary text-xs tracking-widest px-0 h-10 transition-colors group-hover:border-white/20"
-                      />
-                    </div>
-                    <div className="group">
-                      <Input 
-                        name="email"
-                        required
-                        type="email"
-                        placeholder="Tu email *" 
-                        defaultValue={userInfo.email}
-                        className="bg-transparent border-0 border-b border-white/10 rounded-none focus-visible:ring-0 focus-visible:border-primary text-xs tracking-widest px-0 h-10 transition-colors group-hover:border-white/20"
-                      />
-                    </div>
-                    <div className="group">
-                      <Input 
-                        name="telefono"
-                        placeholder="Tu teléfono" 
-                        defaultValue={userInfo.phone}
-                        className="bg-transparent border-0 border-b border-white/10 rounded-none focus-visible:ring-0 focus-visible:border-primary text-xs tracking-widest px-0 h-10 transition-colors group-hover:border-white/20"
-                      />
-                    </div>
-                    <div className="group">
-                      <Textarea 
-                        name="consulta"
-                        placeholder="Tu consulta" 
-                        className="bg-transparent border-0 border-b border-white/10 rounded-none focus-visible:ring-0 focus-visible:border-primary text-xs tracking-widest px-0 min-h-[120px] resize-none transition-colors group-hover:border-white/20"
-                      />
-                    </div>
-                  </div>
-                  <Button 
-                    type="submit"
-                    className="w-full bg-primary text-black hover:bg-gold-light py-8 uppercase tracking-[0.4em] font-black rounded-none shadow-lg hover:shadow-primary/20 transition-all"
-                  >
-                    Enviar consulta
+              {property.status === "vendido" ? (
+                <div className="bg-red-500/10 border border-red-500/20 p-10 backdrop-blur-md text-center">
+                  <Badge className="bg-red-500 text-white border-0 rounded-none px-6 py-2 uppercase tracking-[0.3em] font-black text-[10px] mb-6">
+                    VENDIDO
+                  </Badge>
+                  <h3 className="text-xl font-serif font-bold text-white mb-4">Esta propiedad ya no está disponible</h3>
+                  <p className="text-white/40 text-xs leading-relaxed uppercase tracking-widest mb-8">
+                    Ya ha sido vendida. Te invitamos a explorar otras opciones similares en nuestro portfolio.
+                  </p>
+                  <Button asChild variant="outline" className="w-full border-white/10 text-white hover:bg-white/5 rounded-none py-6 font-bold tracking-widest uppercase text-[10px]">
+                    <Link to="/propiedades">Ver otras propiedades</Link>
                   </Button>
-                </form>
+                </div>
+              ) : (
+                <div className="bg-white/5 border border-white/10 p-10 backdrop-blur-md relative">
+                  <div className="absolute -top-px left-8 right-8 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
+                  
+                  <h3 className="text-lg font-serif font-bold text-white mb-2 tracking-tight">Consultá ahora</h3>
+                  <p className="text-[10px] text-white/40 uppercase tracking-[0.2em] mb-10">Te respondemos a la brevedad.</p>
 
-                {property.pdf_url && (
-                  <div className="mt-12 pt-10 border-t border-white/10 text-center">
-                    <a 
-                      href={property.pdf_url} 
-                      target="_blank" 
-                      rel="noreferrer"
-                      className="inline-flex items-center gap-3 text-[10px] uppercase tracking-[0.3em] font-black text-white/40 hover:text-primary transition-colors"
+                  <form 
+                    key={userInfo.email || "empty"}
+                    onSubmit={async (e) => {
+                      e.preventDefault();
+                      const form = e.target as HTMLFormElement;
+                      const formData = new FormData(form);
+                      
+                      const nombre = formData.get("nombre") as string;
+                      const email = formData.get("email") as string;
+                      const telefono = formData.get("telefono") as string;
+                      const consulta = formData.get("consulta") as string;
+
+                      try {
+                        const { error } = await supabase.from("inquiries").insert({
+                          full_name: nombre,
+                          email: email,
+                          phone: telefono,
+                          property_id: property.id,
+                          message: consulta
+                        });
+
+                        if (error) throw error;
+
+                        toast.success("Consulta enviada con éxito. Nos contactaremos a la brevedad.");
+                        form.reset();
+                      } catch (error) {
+                        console.error("Error saving inquiry:", error);
+                        toast.error("Hubo un error al enviar la consulta. Por favor, intenta de nuevo.");
+                      }
+                    }} 
+                    className="space-y-8"
+                  >
+                    <div className="space-y-6">
+                      <div className="group">
+                        <Input 
+                          name="nombre"
+                          required
+                          placeholder="Tu nombre *" 
+                          defaultValue={userInfo.full_name}
+                          className="bg-transparent border-0 border-b border-white/10 rounded-none focus-visible:ring-0 focus-visible:border-primary text-xs tracking-widest px-0 h-10 transition-colors group-hover:border-white/20"
+                        />
+                      </div>
+                      <div className="group">
+                        <Input 
+                          name="email"
+                          required
+                          type="email"
+                          placeholder="Tu email *" 
+                          defaultValue={userInfo.email}
+                          className="bg-transparent border-0 border-b border-white/10 rounded-none focus-visible:ring-0 focus-visible:border-primary text-xs tracking-widest px-0 h-10 transition-colors group-hover:border-white/20"
+                        />
+                      </div>
+                      <div className="group">
+                        <Input 
+                          name="telefono"
+                          placeholder="Tu teléfono" 
+                          defaultValue={userInfo.phone}
+                          className="bg-transparent border-0 border-b border-white/10 rounded-none focus-visible:ring-0 focus-visible:border-primary text-xs tracking-widest px-0 h-10 transition-colors group-hover:border-white/20"
+                        />
+                      </div>
+                      <div className="group">
+                        <Textarea 
+                          name="consulta"
+                          placeholder="Tu consulta" 
+                          className="bg-transparent border-0 border-b border-white/10 rounded-none focus-visible:ring-0 focus-visible:border-primary text-xs tracking-widest px-0 min-h-[120px] resize-none transition-colors group-hover:border-white/20"
+                        />
+                      </div>
+                    </div>
+                    <Button 
+                      type="submit"
+                      className="w-full bg-primary text-black hover:bg-gold-light py-8 uppercase tracking-[0.4em] font-black rounded-none shadow-lg hover:shadow-primary/20 transition-all"
                     >
-                      <FileText className="w-5 h-5" /> Ver Ficha PDF
-                    </a>
-                  </div>
-                )}
-              </div>
+                      Enviar consulta
+                    </Button>
+                  </form>
+
+                  {property.pdf_url && (
+                    <div className="mt-12 pt-10 border-t border-white/10 text-center">
+                      <a 
+                        href={property.pdf_url} 
+                        target="_blank" 
+                        rel="noreferrer"
+                        className="inline-flex items-center gap-3 text-[10px] uppercase tracking-[0.3em] font-black text-white/40 hover:text-primary transition-colors"
+                      >
+                        <FileText className="w-5 h-5" /> Ver Ficha PDF
+                      </a>
+                    </div>
+                  )}
+                </div>
+              )}
               
               <div className="flex items-center justify-center gap-8 mt-12">
                 <Instagram className="w-5 h-5 text-white/20 hover:text-primary cursor-pointer transition-colors" />

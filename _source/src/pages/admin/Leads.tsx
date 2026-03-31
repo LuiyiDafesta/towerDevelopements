@@ -16,7 +16,7 @@ import {
   PaginationEllipsis
 } from "@/components/ui/pagination";
 import { jsPDF } from "jspdf";
-import "jspdf-autotable";
+import autoTable from "jspdf-autotable";
 import { json2csv } from "json-2-csv";
 
 export default function AdminLeads() {
@@ -103,7 +103,7 @@ export default function AdminLeads() {
         new Date(l.created_at).toLocaleDateString()
       ]);
 
-      (doc as any).autoTable({
+      autoTable(doc, {
         head: [['Nombre', 'Email', 'Teléfono', 'Propiedad', 'Zona', 'Objetivo', 'Estado', 'Fecha']],
         body: tableData,
         startY: 40,

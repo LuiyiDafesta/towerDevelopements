@@ -41,27 +41,33 @@ export type Database = {
           email: string
           full_name: string
           id: string
+          internal_notes: string | null
           message: string | null
           phone: string
           property_id: string | null
+          status: string | null
         }
         Insert: {
           created_at?: string | null
           email: string
           full_name: string
           id?: string
+          internal_notes?: string | null
           message?: string | null
           phone: string
           property_id?: string | null
+          status?: string | null
         }
         Update: {
           created_at?: string | null
           email?: string
           full_name?: string
           id?: string
+          internal_notes?: string | null
           message?: string | null
           phone?: string
           property_id?: string | null
+          status?: string | null
         }
         Relationships: [
           {
@@ -95,10 +101,12 @@ export type Database = {
           email: string
           full_name: string
           id: string
+          internal_notes: string | null
           phone: string
           preferred_zone: string | null
           property_type: string | null
           purpose: string | null
+          status: string | null
         }
         Insert: {
           created_at?: string | null
@@ -106,10 +114,12 @@ export type Database = {
           email: string
           full_name: string
           id?: string
+          internal_notes?: string | null
           phone: string
           preferred_zone?: string | null
           property_type?: string | null
           purpose?: string | null
+          status?: string | null
         }
         Update: {
           created_at?: string | null
@@ -117,10 +127,12 @@ export type Database = {
           email?: string
           full_name?: string
           id?: string
+          internal_notes?: string | null
           phone?: string
           preferred_zone?: string | null
           property_type?: string | null
           purpose?: string | null
+          status?: string | null
         }
         Relationships: []
       }

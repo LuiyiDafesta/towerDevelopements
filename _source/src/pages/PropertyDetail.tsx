@@ -136,15 +136,24 @@ const PropertyDetail = () => {
             
             {/* Gallery (Col 8) */}
             <div className="lg:col-span-8">
-              <div className="relative rounded-sm overflow-hidden h-[400px] md:h-[600px] group shadow-2xl">
+              <div className="relative rounded-sm overflow-hidden h-[400px] md:h-[600px] group shadow-2xl bg-black/40">
+                {/* Background Blur Layer */}
+                <img
+                  src={images[currentImage]}
+                  alt="Background blur"
+                  className="absolute inset-0 w-full h-full object-cover blur-2xl opacity-40 scale-110"
+                />
+                
+                {/* Main Content Layer (Contain) */}
                 <img
                   src={images[currentImage]}
                   alt={property.title}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  className="relative w-full h-full object-contain transition-transform duration-700 group-hover:scale-105 z-10"
                 />
-                <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/80 to-transparent" />
                 
-                <div className="absolute bottom-6 right-6">
+                <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/80 to-transparent z-20" />
+                
+                <div className="absolute bottom-6 right-6 z-30">
                   <button 
                     onClick={() => setShowAllGallery(true)}
                     className="bg-black/60 backdrop-blur-md border border-white/20 text-white px-4 py-2 text-[10px] uppercase tracking-widest font-bold flex items-center gap-2 hover:bg-primary hover:text-black transition-all"
@@ -154,7 +163,7 @@ const PropertyDetail = () => {
                 </div>
 
                 {images.length > 1 && (
-                  <div className="absolute top-1/2 inset-x-4 -translate-y-1/2 flex justify-between opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="absolute top-1/2 inset-x-4 -translate-y-1/2 flex justify-between opacity-0 group-hover:opacity-100 transition-opacity z-30">
                     <button
                       onClick={() => setCurrentImage((prev) => (prev === 0 ? images.length - 1 : prev - 1))}
                       className="bg-black/40 backdrop-blur-md p-3 border border-white/10 text-white"
@@ -483,14 +492,22 @@ const PropertyDetail = () => {
             </button>
           </div>
           <div className="container mx-auto px-4 py-12">
-            <div className="columns-1 md:columns-2 lg:columns-3 gap-4 space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {images.map((img, i) => (
-                <img 
-                  key={i} 
-                  src={img} 
-                  alt="Gallery item" 
-                  className="w-full h-auto border border-white/5 hover:border-primary/40 transition-all cursor-zoom-in"
-                />
+                <div key={i} className="relative h-[500px] rounded-sm overflow-hidden bg-black/40 border border-white/5 group">
+                  {/* Background Blur */}
+                  <img 
+                    src={img} 
+                    alt="Gallery item blur" 
+                    className="absolute inset-0 w-full h-full object-cover blur-2xl opacity-30 scale-110"
+                  />
+                  {/* Main Image */}
+                  <img 
+                    src={img} 
+                    alt="Gallery item" 
+                    className="relative w-full h-full object-contain cursor-zoom-in z-10 transition-transform duration-500 group-hover:scale-[1.02]"
+                  />
+                </div>
               ))}
             </div>
           </div>

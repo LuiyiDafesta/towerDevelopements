@@ -14,6 +14,27 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_settings: {
+        Row: {
+          id: string
+          key: string
+          updated_at: string | null
+          value: string | null
+        }
+        Insert: {
+          id?: string
+          key: string
+          updated_at?: string | null
+          value?: string | null
+        }
+        Update: {
+          id?: string
+          key?: string
+          updated_at?: string | null
+          value?: string | null
+        }
+        Relationships: []
+      }
       inquiries: {
         Row: {
           created_at: string | null
@@ -215,7 +236,7 @@ export type Database = {
           project_name?: string | null
           square_meters?: number | null
           status?: Database["public"]["Enums"]["property_status"] | null
-          title?: string
+          title: string
           whatsapp?: string | null
         }
         Relationships: [
@@ -233,10 +254,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      check_is_admin: {
-        Args: Record<PropertyKey, never>
-        Returns: boolean
-      }
+      check_is_admin: { Args: never; Returns: boolean }
     }
     Enums: {
       property_status: "disponible" | "reservado" | "vendido"

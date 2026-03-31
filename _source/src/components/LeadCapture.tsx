@@ -100,6 +100,31 @@ const LeadCapture = ({ onComplete }: LeadCaptureProps) => {
         title: "¡Gracias por tu interés!",
         description: "Ya podés explorar todas nuestras propiedades.",
       });
+
+      // 4. Trigger Webhook if configured
+      try {
+        const { data: webhookUrl } = await supabase
+          .from("admin_settings")
+          .select("value")
+          .eq("key", "webhook_leads")
+          .maybeSingle();
+
+        if (webhookUrl?.value) {
+          fetch(webhookUrl.value, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              event: "new_lead",
+              timestamp: new Date().toISOString(),
+              source: "website_lead_capture",
+              data: values
+            }),
+          }).catch(err => console.error("Webhook fetch error:", err));
+        }
+      } catch (webhookErr) {
+        console.error("Error triggering lead webhook:", webhookErr);
+      }
+
       onComplete();
     } catch (error: any) {
       toast({

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, Link, Outlet, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { LayoutDashboard, Building2, MapPin, LogOut, Loader2, Menu, X, Users, MessageSquare } from "lucide-react";
+import { LayoutDashboard, Building2, MapPin, LogOut, Loader2, Menu, X, Users, MessageSquare, Webhook } from "lucide-react";
 import { toast } from "sonner";
 
 export default function AdminLayout() {
@@ -63,6 +63,7 @@ export default function AdminLayout() {
     { title: "Consultas", path: "/admin/consultas", icon: MessageSquare },
     { title: "Propiedades", path: "/admin/propiedades", icon: Building2 },
     { title: "Barrios", path: "/admin/barrios", icon: MapPin },
+    { title: "Configuración", path: "/admin/configuracion", icon: Webhook },
   ];
 
   return (

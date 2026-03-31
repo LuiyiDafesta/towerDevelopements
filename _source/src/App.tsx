@@ -18,6 +18,7 @@ import AdminProperties from "./pages/admin/Properties.tsx";
 import AdminNeighborhoods from "./pages/admin/Neighborhoods.tsx";
 import AdminLeads from "./pages/admin/Leads.tsx";
 import AdminInquiries from "./pages/admin/Inquiries.tsx";
+import AdminSettings from "./pages/admin/Settings.tsx";
 import PropertyForm from "./pages/admin/PropertyForm.tsx";
 import LeadCapture from "./components/LeadCapture.tsx";
 import WhatsAppButton from "./components/WhatsAppButton";
@@ -72,6 +73,7 @@ const App = () => {
                     <Route path="propiedades/nueva" element={<PropertyForm />} />
                     <Route path="propiedades/:id" element={<PropertyForm />} />
                     <Route path="barrios" element={<AdminNeighborhoods />} />
+                    <Route path="configuracion" element={<AdminSettings />} />
                   </Route>
 
                   <Route path="*" element={<NotFound />} />

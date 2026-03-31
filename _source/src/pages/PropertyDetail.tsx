@@ -357,6 +357,44 @@ const PropertyDetail = () => {
                         if (error) throw error;
 
                         toast.success("Consulta enviada con éxito. Nos contactaremos a la brevedad.");
+
+                        // Trigger Webhook if configured
+                        try {
+                          const { data: webhookUrl } = await supabase
+                            .from("admin_settings")
+                            .select("value")
+                            .eq("key", "webhook_inquiries")
+                            .maybeSingle();
+
+                          if (webhookUrl?.value) {
+                            fetch(webhookUrl.value, {
+                              method: "POST",
+                              headers: { "Content-Type": "application/json" },
+                              body: JSON.stringify({
+                                event: "new_inquiry",
+                                timestamp: new Date().toISOString(),
+                                source: "property_detail_form",
+                                client_data: {
+                                  full_name: nombre,
+                                  email: email,
+                                  phone: telefono,
+                                  message: consulta
+                                },
+                                property_data: {
+                                  id: property.id,
+                                  title: property.title,
+                                  price: property.price,
+                                  location: property.location,
+                                  reference: `REF-${property.id.substring(0, 8).toUpperCase()}`,
+                                  url: window.location.href
+                                }
+                              }),
+                            }).catch(err => console.error("Inquiry webhook fetch error:", err));
+                          }
+                        } catch (webhookErr) {
+                          console.error("Error triggering inquiry webhook:", webhookErr);
+                        }
+
                         form.reset();
                       } catch (error) {
                         console.error("Error saving inquiry:", error);

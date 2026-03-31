@@ -49,8 +49,8 @@ const App = () => {
     <HelmetProvider>
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
-          <MarketingTracker />
           <BrowserRouter>
+            <MarketingTracker />
             <Toaster />
             <Sonner />
             {displayLanding ? (

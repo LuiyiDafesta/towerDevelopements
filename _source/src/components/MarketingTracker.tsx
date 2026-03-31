@@ -1,8 +1,19 @@
 import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 
+declare global {
+  interface Window {
+    gtag?: (...args: any[]) => void;
+    fbq?: (...args: any[]) => void;
+    dataLayer?: any[];
+  }
+}
+
 const MarketingTracker = () => {
+  const location = useLocation();
+
   const { data: settings } = useQuery({
     queryKey: ["admin-marketing-settings"],
     queryFn: async () => {
@@ -20,13 +31,13 @@ const MarketingTracker = () => {
     },
   });
 
+  // 1. Initial Script Injection (once settings are loaded)
   useEffect(() => {
     if (!settings) return;
 
-    // 1. Google Analytics (GTAG)
-    if (settings.google_analytics_id && settings.google_analytics_id.trim() !== "") {
+    // Google Analytics
+    if (settings.google_analytics_id && settings.google_analytics_id.trim() !== "" && !window.gtag) {
       const gaId = settings.google_analytics_id.trim();
-      
       const script = document.createElement("script");
       script.async = true;
       script.src = `https://www.googletagmanager.com/gtag/js?id=${gaId}`;
@@ -36,16 +47,16 @@ const MarketingTracker = () => {
       inlineScript.innerHTML = `
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
+        window.gtag = gtag;
         gtag('js', new Date());
         gtag('config', '${gaId}');
       `;
       document.head.appendChild(inlineScript);
     }
 
-    // 2. Facebook Pixel
-    if (settings.facebook_pixel_id && settings.facebook_pixel_id.trim() !== "") {
+    // Facebook Pixel
+    if (settings.facebook_pixel_id && settings.facebook_pixel_id.trim() !== "" && !window.fbq) {
       const fbId = settings.facebook_pixel_id.trim();
-      
       const fbScript = document.createElement("script");
       fbScript.innerHTML = `
         !function(f,b,e,v,n,t,s)
@@ -56,38 +67,44 @@ const MarketingTracker = () => {
         t.src=v;s=b.getElementsByTagName(e)[0];
         s.parentNode.insertBefore(t,s)}(window, document,'script',
         'https://connect.facebook.net/en_US/fbevents.js');
+        window.fbq = fbq;
         fbq('init', '${fbId}');
         fbq('track', 'PageView');
       `;
       document.head.appendChild(fbScript);
-
-      const fbNoScript = document.createElement("noscript");
-      fbNoScript.innerHTML = `
-        <img height="1" width="1" style="display:none"
-        src="https://www.facebook.com/tr?id=${fbId}&ev=PageView&noscript=1" />
-      `;
-      document.head.appendChild(fbNoScript);
     }
 
-    // 3. Visitor Tracking (General / Head Injection)
+    // Visitor Tracking
     if (settings.visitor_tracking_code && settings.visitor_tracking_code.trim() !== "") {
       const vtCode = settings.visitor_tracking_code.trim();
-      
-      // If it's just an ID and not a partial script, we might need a specific template.
-      // But usually, these systems provide a script. We'll append it to head.
       const vtScript = document.createElement("script");
-      
-      // Check if user pasted a full script or just an ID
-      if (vtCode.includes("<script")) {
-        // This is complex for appendChild, so we just add the content safely if possible
-        // Better: user usually pastes just the code or a clean ID.
-        console.log("Visitor tracking script detected.");
-      } else {
+      if (!vtCode.includes("<script")) {
         vtScript.innerHTML = vtCode;
         document.head.appendChild(vtScript);
       }
     }
   }, [settings]);
+
+  // 2. Route Change Tracking (Manual PageView triggers for SPA)
+  useEffect(() => {
+    if (!settings) return;
+
+    const url = window.location.origin + location.pathname + location.search;
+
+    // Manual Google Analytics Hit
+    if (window.gtag && settings.google_analytics_id) {
+      window.gtag('config', settings.google_analytics_id, {
+        page_location: url,
+        page_path: location.pathname,
+        page_title: document.title,
+      });
+    }
+
+    // Manual Facebook Pixel Hit
+    if (window.fbq && settings.facebook_pixel_id) {
+      window.fbq('track', 'PageView');
+    }
+  }, [location, settings]);
 
   return null;
 };

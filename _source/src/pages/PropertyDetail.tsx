@@ -293,34 +293,38 @@ const PropertyDetail = () => {
                 <h3 className="text-lg font-serif font-bold text-white mb-2 tracking-tight">Consultá ahora</h3>
                 <p className="text-[10px] text-white/40 uppercase tracking-[0.2em] mb-10">Te respondemos a la brevedad.</p>
 
-                <form onSubmit={async (e) => {
-                  e.preventDefault();
-                  const form = e.target as HTMLFormElement;
-                  const formData = new FormData(form);
-                  
-                  const nombre = formData.get("nombre") as string;
-                  const email = formData.get("email") as string;
-                  const telefono = formData.get("telefono") as string;
-                  const consulta = formData.get("consulta") as string;
+                <form 
+                  key={userInfo.email || "empty"}
+                  onSubmit={async (e) => {
+                    e.preventDefault();
+                    const form = e.target as HTMLFormElement;
+                    const formData = new FormData(form);
+                    
+                    const nombre = formData.get("nombre") as string;
+                    const email = formData.get("email") as string;
+                    const telefono = formData.get("telefono") as string;
+                    const consulta = formData.get("consulta") as string;
 
-                  try {
-                    const { error } = await supabase.from("inquiries").insert({
-                      full_name: nombre,
-                      email: email,
-                      phone: telefono,
-                      property_id: property.id,
-                      message: consulta
-                    });
+                    try {
+                      const { error } = await supabase.from("inquiries").insert({
+                        full_name: nombre,
+                        email: email,
+                        phone: telefono,
+                        property_id: property.id,
+                        message: consulta
+                      });
 
-                    if (error) throw error;
+                      if (error) throw error;
 
-                    toast.success("Consulta enviada con éxito. Nos contactaremos a la brevedad.");
-                    form.reset();
-                  } catch (error) {
-                    console.error("Error saving inquiry:", error);
-                    toast.error("Hubo un error al enviar la consulta. Por favor, intenta de nuevo.");
-                  }
-                }} className="space-y-8">
+                      toast.success("Consulta enviada con éxito. Nos contactaremos a la brevedad.");
+                      form.reset();
+                    } catch (error) {
+                      console.error("Error saving inquiry:", error);
+                      toast.error("Hubo un error al enviar la consulta. Por favor, intenta de nuevo.");
+                    }
+                  }} 
+                  className="space-y-8"
+                >
                   <div className="space-y-6">
                     <div className="group">
                       <Input 

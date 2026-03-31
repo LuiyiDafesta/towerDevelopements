@@ -1,5 +1,5 @@
-import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import Navbar from "@/components/Navbar";
@@ -18,6 +18,18 @@ const PropertyDetail = () => {
   const { id } = useParams();
   const [currentImage, setCurrentImage] = useState(0);
   const [showAllGallery, setShowAllGallery] = useState(false);
+  const [userInfo, setUserInfo] = useState({ full_name: "", email: "", phone: "" });
+
+  useEffect(() => {
+    const savedInfo = localStorage.getItem("user_contact_info");
+    if (savedInfo) {
+      try {
+        setUserInfo(JSON.parse(savedInfo));
+      } catch (e) {
+        console.error("Error parsing user info from storage:", e);
+      }
+    }
+  }, []);
 
   const { data: property, isLoading } = useQuery({
     queryKey: ["property", id],
@@ -292,13 +304,12 @@ const PropertyDetail = () => {
                   const consulta = formData.get("consulta") as string;
 
                   try {
-                    const { error } = await supabase.from("leads").insert({
+                    const { error } = await supabase.from("inquiries").insert({
                       full_name: nombre,
                       email: email,
                       phone: telefono,
-                      preferred_zone: property.neighborhoods?.name || property.location,
-                      property_type: `Consulta por: ${property.title}`,
-                      purpose: consulta
+                      property_id: property.id,
+                      message: consulta
                     });
 
                     if (error) throw error;
@@ -306,7 +317,7 @@ const PropertyDetail = () => {
                     toast.success("Consulta enviada con éxito. Nos contactaremos a la brevedad.");
                     form.reset();
                   } catch (error) {
-                    console.error("Error saving lead:", error);
+                    console.error("Error saving inquiry:", error);
                     toast.error("Hubo un error al enviar la consulta. Por favor, intenta de nuevo.");
                   }
                 }} className="space-y-8">
@@ -316,6 +327,7 @@ const PropertyDetail = () => {
                         name="nombre"
                         required
                         placeholder="Tu nombre *" 
+                        defaultValue={userInfo.full_name}
                         className="bg-transparent border-0 border-b border-white/10 rounded-none focus-visible:ring-0 focus-visible:border-primary text-xs tracking-widest px-0 h-10 transition-colors group-hover:border-white/20"
                       />
                     </div>
@@ -325,6 +337,7 @@ const PropertyDetail = () => {
                         required
                         type="email"
                         placeholder="Tu email *" 
+                        defaultValue={userInfo.email}
                         className="bg-transparent border-0 border-b border-white/10 rounded-none focus-visible:ring-0 focus-visible:border-primary text-xs tracking-widest px-0 h-10 transition-colors group-hover:border-white/20"
                       />
                     </div>
@@ -332,6 +345,7 @@ const PropertyDetail = () => {
                       <Input 
                         name="telefono"
                         placeholder="Tu teléfono" 
+                        defaultValue={userInfo.phone}
                         className="bg-transparent border-0 border-b border-white/10 rounded-none focus-visible:ring-0 focus-visible:border-primary text-xs tracking-widest px-0 h-10 transition-colors group-hover:border-white/20"
                       />
                     </div>

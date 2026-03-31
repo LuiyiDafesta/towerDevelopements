@@ -74,13 +74,31 @@ const LeadCapture = ({ onComplete }: LeadCaptureProps) => {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setIsSubmitting(true);
     try {
-      const { error } = await supabase.from("leads").insert([values as any]);
-      if (error) throw error;
+      // 1. Check if email already exists
+      const { data: existingLead } = await supabase
+        .from("leads")
+        .select("full_name, email, phone")
+        .eq("email", values.email)
+        .maybeSingle();
 
+      if (!existingLead) {
+        // 2. Insert new lead if it doesn't exist
+        const { error } = await supabase.from("leads").insert([values as any]);
+        if (error) throw error;
+      }
+
+      // 3. Store contact info for auto-filling property forms later
+      const contactInfo = {
+        full_name: values.full_name,
+        email: values.email,
+        phone: values.phone
+      };
+      localStorage.setItem("user_contact_info", JSON.stringify(contactInfo));
       localStorage.setItem("lead_captured", "true");
+
       toast({
         title: "¡Gracias por tu interés!",
-        description: "En breve nos pondremos en contacto contigo.",
+        description: "Ya podés explorar todas nuestras propiedades.",
       });
       onComplete();
     } catch (error: any) {

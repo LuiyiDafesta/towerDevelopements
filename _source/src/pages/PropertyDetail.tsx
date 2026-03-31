@@ -286,30 +286,28 @@ const PropertyDetail = () => {
                   const form = e.target as HTMLFormElement;
                   const formData = new FormData(form);
                   
+                  const nombre = formData.get("nombre") as string;
+                  const email = formData.get("email") as string;
+                  const telefono = formData.get("telefono") as string;
+                  const consulta = formData.get("consulta") as string;
+
                   try {
-                    const response = await fetch("https://towerdevelopers.com/contact.php", {
-                      method: "POST",
-                      headers: {
-                        "Content-Type": "application/json",
-                      },
-                      body: JSON.stringify({
-                        nombre: formData.get("nombre"),
-                        email: formData.get("email"),
-                        telefono: formData.get("telefono"),
-                        consulta: formData.get("consulta"),
-                        property_title: property.title,
-                        owner_email: property.contact_email || "info@towerdevelopers.com"
-                      }),
+                    const { error } = await supabase.from("leads").insert({
+                      full_name: nombre,
+                      email: email,
+                      phone: telefono,
+                      preferred_zone: property.neighborhoods?.name || property.location,
+                      property_type: `Consulta por: ${property.title}`,
+                      purpose: consulta
                     });
 
-                    if (response.ok) {
-                      toast.success("Consulta enviada con éxito. Nos contactaremos a la brevedad.");
-                      form.reset();
-                    } else {
-                      toast.error("Hubo un error al enviar la consulta. Por favor, intenta de nuevo.");
-                    }
+                    if (error) throw error;
+
+                    toast.success("Consulta enviada con éxito. Nos contactaremos a la brevedad.");
+                    form.reset();
                   } catch (error) {
-                    toast.error("Error de conexión al intentar enviar el formulario.");
+                    console.error("Error saving lead:", error);
+                    toast.error("Hubo un error al enviar la consulta. Por favor, intenta de nuevo.");
                   }
                 }} className="space-y-8">
                   <div className="space-y-6">

@@ -55,7 +55,8 @@ export default function AdminInquiries() {
   const filteredInquiries = inquiries.filter((i) =>
     i.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     i.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    i.properties?.title?.toLowerCase().includes(searchTerm.toLowerCase())
+    i.properties?.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (i.property_id && `REF-${i.property_id.substring(0, 8)}`.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
   const totalPages = Math.ceil(filteredInquiries.length / itemsPerPage);
@@ -79,6 +80,11 @@ export default function AdminInquiries() {
     });
   };
 
+  const getRef = (id: string) => {
+    if (!id) return "";
+    return `REF-${id.substring(0, 8).toUpperCase()}`;
+  };
+
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -92,7 +98,7 @@ export default function AdminInquiries() {
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
         <input
           type="text"
-          placeholder="Buscar por nombre, email o propiedad..."
+          placeholder="Buscar por nombre, email, propiedad o REF..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="w-full bg-black/40 border border-gold/10 rounded-lg py-3 pl-10 pr-4 text-white placeholder:text-white/20 focus:outline-none focus:ring-1 focus:ring-gold/40 transition-all font-inter"
@@ -149,11 +155,16 @@ export default function AdminInquiries() {
                     </div>
                   </TableCell>
                   <TableCell className="py-4">
-                    <div className="flex items-center gap-2">
-                      <Home className="w-4 h-4 text-primary" />
-                      <span className="text-primary text-xs font-bold font-inter italic tracking-tight">
-                        {i.properties?.title || "Propiedad no encontrada"}
-                      </span>
+                    <div className="flex flex-col gap-1">
+                      <div className="flex items-center gap-2">
+                        <Home className="w-3 h-3 text-gold" />
+                        <span className="text-white/80 text-[10px] font-bold font-inter uppercase tracking-tighter truncate max-w-[150px]">
+                          {i.properties?.title || "No encontrada"}
+                        </span>
+                      </div>
+                      <Badge variant="outline" className="w-fit text-[9px] border-gold/20 text-gold bg-gold/5 font-mono py-0 px-2 h-5">
+                        {getRef(i.property_id)}
+                      </Badge>
                     </div>
                   </TableCell>
                   <TableCell className="py-4 max-w-[250px]">

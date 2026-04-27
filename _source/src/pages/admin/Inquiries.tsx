@@ -216,11 +216,11 @@ export default function AdminInquiries() {
         <Table>
           <TableHeader className="bg-gold/5">
             <TableRow className="border-gold/10 hover:bg-transparent">
-              <TableHead className="text-gold uppercase tracking-widest text-[10px] font-black py-5">Interesado</TableHead>
-              <TableHead className="text-gold uppercase tracking-widest text-[10px] font-black">Propiedad / Ref</TableHead>
-              <TableHead className="text-gold uppercase tracking-widest text-[10px] font-black">Estado</TableHead>
-              <TableHead className="text-gold uppercase tracking-widest text-[10px] font-black">Mensaje</TableHead>
-              <TableHead className="text-gold uppercase tracking-widest text-[10px] font-black text-right pr-6">Fecha</TableHead>
+              <TableHead className="text-gold uppercase tracking-wider text-xs font-black py-5">Interesado</TableHead>
+              <TableHead className="text-gold uppercase tracking-wider text-xs font-black">Propiedad / Ref</TableHead>
+              <TableHead className="text-gold uppercase tracking-wider text-xs font-black">Estado</TableHead>
+              <TableHead className="text-gold uppercase tracking-wider text-xs font-black">Mensaje</TableHead>
+              <TableHead className="text-gold uppercase tracking-wider text-xs font-black text-right pr-6">Fecha</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -228,7 +228,7 @@ export default function AdminInquiries() {
               <TableRow>
                 <TableCell colSpan={5} className="text-center py-20 text-white/20">
                   <Loader2 className="w-8 h-8 animate-spin text-gold mx-auto mb-4" />
-                  <span className="uppercase tracking-widest text-[10px]">Cargando consultas...</span>
+                  <span className="uppercase tracking-wider text-xs">Cargando consultas...</span>
                 </TableCell>
               </TableRow>
             ) : paginatedInquiries.length === 0 ? (
@@ -241,25 +241,25 @@ export default function AdminInquiries() {
               paginatedInquiries.map((i) => (
                 <TableRow key={i.id} className="border-gold/10 hover:bg-gold/5 transition-all group">
                   <TableCell className="py-6">
-                    <div className="flex items-center gap-3 ml-2">
-                      <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center border border-white/10 group-hover:border-gold/30">
-                        <User className="w-4 h-4 text-white/40 group-hover:text-gold" />
+                    <div className="flex items-center gap-4 ml-2">
+                      <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center border border-white/10 group-hover:border-gold/40">
+                        <User className="w-5 h-5 text-white/60 group-hover:text-gold" />
                       </div>
                       <div className="flex flex-col">
-                        <span className="text-white font-bold text-sm tracking-tight">{i.full_name}</span>
-                        <div className="flex items-center gap-3 text-[10px] text-white/30 uppercase tracking-tighter mt-0.5">
-                          <span className="flex items-center gap-1"><Mail className="w-2.5 h-2.5" /> {i.email}</span>
-                          <span className="flex items-center gap-1 text-gold/60"><Phone className="w-2.5 h-2.5" /> {i.phone}</span>
+                        <span className="text-white font-bold text-base tracking-tight mb-1">{i.full_name}</span>
+                        <div className="flex items-center gap-3 text-xs text-white/50 uppercase tracking-wider">
+                          <span className="flex items-center gap-1.5"><Mail className="w-3.5 h-3.5" /> {i.email}</span>
+                          <span className="flex items-center gap-1.5 text-gold/80"><Phone className="w-3.5 h-3.5" /> {i.phone}</span>
                         </div>
                       </div>
                     </div>
                   </TableCell>
                   <TableCell>
-                    <div className="flex flex-col gap-1">
-                      <div className="flex items-center gap-2 text-white/80 text-[10px] font-bold uppercase tracking-tight truncate max-w-[150px]">
-                        <Home className="w-3 h-3 text-gold" /> {i.properties?.title || "No encontrada"}
+                    <div className="flex flex-col gap-1.5">
+                      <div className="flex items-center gap-2 text-white/90 text-xs font-bold uppercase tracking-tight truncate max-w-[200px]">
+                        <Home className="w-4 h-4 text-gold" /> {i.properties?.title || "No encontrada"}
                       </div>
-                      <Badge variant="outline" className="w-fit text-[8px] border-gold/10 text-white/40 font-mono py-0 px-2 h-4 scale-90 origin-left">
+                      <Badge variant="outline" className="w-fit text-[10px] border-gold/20 text-white/60 font-mono py-0.5 px-2.5 h-5">
                         {getRef(i.property_id)}
                       </Badge>
                     </div>
@@ -269,28 +269,28 @@ export default function AdminInquiries() {
                       defaultValue={i.status || "nuevo"} 
                       onValueChange={(val) => updateInquiryStatus(i.id, val)}
                     >
-                      <SelectTrigger className={`w-[130px] h-7 text-[9px] uppercase tracking-widest font-black rounded-none border-0 ${getStatusColor(i.status || "nuevo")}`}>
+                      <SelectTrigger className={`w-[140px] h-9 text-xs uppercase tracking-wider font-bold rounded-sm border-0 ${getStatusColor(i.status || "nuevo")}`}>
                         <div className="flex items-center gap-2">
                           {getStatusIcon(i.status || "nuevo")}
                           <SelectValue />
                         </div>
                       </SelectTrigger>
-                      <SelectContent className="bg-black border-gold/20 text-white rounded-none">
-                        <SelectItem value="nuevo" className="text-[9px] uppercase tracking-widest focus:bg-gold/10 focus:text-gold">Nuevo</SelectItem>
-                        <SelectItem value="respondido" className="text-[9px] uppercase tracking-widest focus:bg-gold/10 focus:text-gold">Respondido</SelectItem>
-                        <SelectItem value="interesado" className="text-[9px] uppercase tracking-widest focus:bg-gold/10 focus:text-gold">Interesado</SelectItem>
-                        <SelectItem value="descartado" className="text-[9px] uppercase tracking-widest focus:bg-gold/10 focus:text-gold">Descartado</SelectItem>
+                      <SelectContent className="bg-black border-gold/20 text-white rounded-sm">
+                        <SelectItem value="nuevo" className="text-xs uppercase tracking-wider font-medium focus:bg-gold/10 focus:text-gold">Nuevo</SelectItem>
+                        <SelectItem value="respondido" className="text-xs uppercase tracking-wider font-medium focus:bg-gold/10 focus:text-gold">Respondido</SelectItem>
+                        <SelectItem value="interesado" className="text-xs uppercase tracking-wider font-medium focus:bg-gold/10 focus:text-gold">Interesado</SelectItem>
+                        <SelectItem value="descartado" className="text-xs uppercase tracking-wider font-medium focus:bg-gold/10 focus:text-gold">Descartado</SelectItem>
                       </SelectContent>
                     </Select>
                   </TableCell>
-                  <TableCell className="max-w-[200px]">
-                    <p className="text-[11px] text-white/50 italic font-inter line-clamp-2 leading-relaxed">
+                  <TableCell className="max-w-[250px]">
+                    <p className="text-xs text-white/70 italic font-inter line-clamp-3 leading-relaxed">
                       "{i.message || "Sin mensaje."}"
                     </p>
                   </TableCell>
                   <TableCell className="text-right pr-6">
-                    <div className="flex flex-col items-end gap-1">
-                      <span className="text-[10px] text-white/40 font-mono">{formatDate(i.created_at)}</span>
+                    <div className="flex flex-col items-end gap-2">
+                      <span className="text-xs text-white/70 font-mono font-medium">{formatDate(i.created_at)}</span>
                       <Button
                         variant="ghost"
                         size="icon"

@@ -203,10 +203,10 @@ export default function AdminLeads() {
         <Table>
           <TableHeader className="bg-gold/5">
             <TableRow className="border-gold/10 hover:bg-transparent">
-              <TableHead className="text-gold uppercase tracking-widest text-[10px] font-black py-4">Cliente / Contacto</TableHead>
-              <TableHead className="text-gold uppercase tracking-widest text-[10px] font-black">Interés / Perfil</TableHead>
-              <TableHead className="text-gold uppercase tracking-widest text-[10px] font-black">Estado Gestión</TableHead>
-              <TableHead className="text-gold uppercase tracking-widest text-[10px] font-black text-right pr-8">Fecha</TableHead>
+              <TableHead className="text-gold uppercase tracking-wider text-xs font-black py-4">Cliente / Contacto</TableHead>
+              <TableHead className="text-gold uppercase tracking-wider text-xs font-black">Interés / Perfil</TableHead>
+              <TableHead className="text-gold uppercase tracking-wider text-xs font-black">Estado Gestión</TableHead>
+              <TableHead className="text-gold uppercase tracking-wider text-xs font-black text-right pr-8">Fecha</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -215,7 +215,7 @@ export default function AdminLeads() {
                 <TableCell colSpan={4} className="text-center py-20 text-white/20">
                   <div className="flex flex-col items-center gap-4">
                     <Loader2 className="w-8 h-8 animate-spin text-gold" />
-                    <span className="uppercase tracking-[0.3em] text-[10px]">Sincronizando Leads...</span>
+                    <span className="uppercase tracking-widest text-xs">Sincronizando Leads...</span>
                   </div>
                 </TableCell>
               </TableRow>
@@ -230,29 +230,29 @@ export default function AdminLeads() {
                 <TableRow key={l.id} className="border-gold/10 hover:bg-gold/5 transition-all group">
                   <TableCell className="py-6">
                     <div className="space-y-1.5 ml-4">
-                      <div className="flex items-center gap-2 text-white font-bold tracking-tight">
-                        <User className="w-3.5 h-3.5 text-gold" />
+                      <div className="flex items-center gap-2 text-white font-bold tracking-tight text-base">
+                        <User className="w-4 h-4 text-gold" />
                         {l.full_name}
                       </div>
-                      <div className="flex items-center gap-4 text-white/40 text-[10px] uppercase tracking-widest">
-                        <span className="flex items-center gap-1.5 hover:text-white transition-colors cursor-pointer"><Mail className="w-3 h-3" /> {l.email}</span>
-                        <span className="flex items-center gap-1.5 text-gold/60"><Phone className="w-3 h-3" /> {l.phone}</span>
+                      <div className="flex items-center gap-4 text-white/60 text-xs uppercase tracking-wider mt-1">
+                        <span className="flex items-center gap-1.5 hover:text-white transition-colors cursor-pointer"><Mail className="w-3.5 h-3.5" /> {l.email}</span>
+                        <span className="flex items-center gap-1.5 text-gold/80"><Phone className="w-3.5 h-3.5" /> {l.phone}</span>
                       </div>
                     </div>
                   </TableCell>
                   <TableCell>
                     <div className="space-y-2">
                       <div className="flex flex-wrap gap-2">
-                        <Badge variant="outline" className="border-white/5 bg-white/5 text-white/60 rounded-none text-[8px] uppercase tracking-widest px-2 py-0.5">
+                        <Badge variant="outline" className="border-white/10 bg-white/5 text-white/80 rounded-sm text-[10px] uppercase tracking-wider px-2.5 py-1 font-medium">
                           {l.property_type || "No especificado"}
                         </Badge>
                         {l.purpose === "Inversión" ? (
-                          <Badge className="bg-blue-500/10 text-blue-400 border-blue-500/20 text-[8px] rounded-none px-2 py-0.5 font-black tracking-widest">INVERSIÓN</Badge>
+                          <Badge className="bg-blue-500/10 text-blue-400 border-blue-500/20 text-[10px] rounded-sm px-2.5 py-1 font-bold tracking-wider">INVERSIÓN</Badge>
                         ) : (
-                          <Badge className="bg-purple-500/10 text-purple-400 border-purple-500/20 text-[8px] rounded-none px-2 py-0.5 font-black tracking-widest">VIVIENDA</Badge>
+                          <Badge className="bg-purple-500/10 text-purple-400 border-purple-500/20 text-[10px] rounded-sm px-2.5 py-1 font-bold tracking-wider">VIVIENDA</Badge>
                         )}
                       </div>
-                      <div className="text-[10px] text-white/30 truncate max-w-[200px]">
+                      <div className="text-xs text-white/50 truncate max-w-[250px] mt-2">
                         Prefiere: {l.preferred_zone || "Cualquiera"} • {l.delivery_time}
                       </div>
                     </div>
@@ -262,26 +262,26 @@ export default function AdminLeads() {
                       defaultValue={l.status || "nuevo"} 
                       onValueChange={(val) => updateLeadStatus(l.id, val)}
                     >
-                      <SelectTrigger className={`w-[140px] h-8 text-[9px] uppercase tracking-widest font-black rounded-none border-0 ${getStatusColor(l.status || "nuevo")}`}>
+                      <SelectTrigger className={`w-[150px] h-9 text-xs uppercase tracking-wider font-bold rounded-sm border-0 ${getStatusColor(l.status || "nuevo")}`}>
                         <div className="flex items-center gap-2">
                           {getStatusIcon(l.status || "nuevo")}
                           <SelectValue />
                         </div>
                       </SelectTrigger>
-                      <SelectContent className="bg-black border-gold/20 text-white rounded-none">
-                        <SelectItem value="nuevo" className="text-[9px] uppercase tracking-widest focus:bg-gold/10 focus:text-gold">Nuevo</SelectItem>
-                        <SelectItem value="contactado" className="text-[9px] uppercase tracking-widest focus:bg-gold/10 focus:text-gold">Contactado</SelectItem>
-                        <SelectItem value="interesado" className="text-[9px] uppercase tracking-widest focus:bg-gold/10 focus:text-gold">Interesado</SelectItem>
-                        <SelectItem value="descartado" className="text-[9px] uppercase tracking-widest focus:bg-gold/10 focus:text-gold">Descartado</SelectItem>
+                      <SelectContent className="bg-black border-gold/20 text-white rounded-sm">
+                        <SelectItem value="nuevo" className="text-xs uppercase tracking-wider font-medium focus:bg-gold/10 focus:text-gold">Nuevo</SelectItem>
+                        <SelectItem value="contactado" className="text-xs uppercase tracking-wider font-medium focus:bg-gold/10 focus:text-gold">Contactado</SelectItem>
+                        <SelectItem value="interesado" className="text-xs uppercase tracking-wider font-medium focus:bg-gold/10 focus:text-gold">Interesado</SelectItem>
+                        <SelectItem value="descartado" className="text-xs uppercase tracking-wider font-medium focus:bg-gold/10 focus:text-gold">Descartado</SelectItem>
                       </SelectContent>
                     </Select>
                   </TableCell>
                   <TableCell className="text-right pr-8">
                     <div className="inline-flex flex-col items-end">
-                      <span className="text-[10px] text-white/60 font-mono tracking-tighter">
+                      <span className="text-xs text-white/80 font-mono tracking-tight font-medium">
                         {formatDate(l.created_at)}
                       </span>
-                      <span className="text-[8px] text-white/20 uppercase tracking-widest mt-1">
+                      <span className="text-[10px] text-white/40 uppercase tracking-wider mt-1">
                         Registrado
                       </span>
                     </div>

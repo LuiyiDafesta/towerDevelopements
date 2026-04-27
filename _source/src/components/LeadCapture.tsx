@@ -110,7 +110,7 @@ const LeadCapture = ({ onComplete }: LeadCaptureProps) => {
           .maybeSingle();
 
         if (webhookUrl?.value) {
-          fetch(webhookUrl.value, {
+          await fetch(webhookUrl.value, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({

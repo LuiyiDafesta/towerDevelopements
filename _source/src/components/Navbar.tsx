@@ -17,7 +17,7 @@ const Navbar = () => {
       <div className="container mx-auto px-4 md:px-8">
         <div className="flex items-center justify-between h-20">
           <Link to="/" className="flex items-center gap-2.5">
-            <img src="/logo.png" alt="Tower Developers" className="w-11 h-11 object-contain rounded-md border border-white/5" />
+            <img src="/logo.png" alt="Tower Developers" className="w-14 h-14 object-contain rounded-md border border-white/5" />
             <div className="flex flex-col -space-y-1">
               <span className="text-lg font-serif font-bold text-primary tracking-wide">Tower</span>
               <span className="text-lg font-serif font-light text-foreground tracking-wide">Developers</span>

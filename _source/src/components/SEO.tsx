@@ -20,6 +20,9 @@ const SEO = ({
   const defaultDescription = "Descubrí las propiedades más exclusivas de Buenos Aires con Tower Developers. Departamentos de lujo, penthouses y desarrollos premium.";
   const metaDescription = description || defaultDescription;
 
+  // Asegurar que la URL de la imagen sea siempre absoluta para que WhatsApp la detecte correctamente
+  const imageUrl = image.startsWith("http") ? image : `https://towerdevelopers.com${image}`;
+
   return (
     <Helmet>
       {/* Standard tags */}
@@ -31,14 +34,18 @@ const SEO = ({
       <meta property="og:type" content={type} />
       <meta property="og:title" content={fullTitle} />
       <meta property="og:description" content={metaDescription} />
-      <meta property="og:image" content={image} />
+      <meta property="og:image" content={imageUrl} />
+      <meta property="og:image:secure_url" content={imageUrl} />
+      <meta property="og:image:type" content={image.endsWith(".png") ? "image/png" : "image/jpeg"} />
+      <meta property="og:image:width" content="1200" />
+      <meta property="og:image:height" content="630" />
       <meta property="og:url" content={url} />
 
       {/* Twitter */}
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={fullTitle} />
       <meta name="twitter:description" content={metaDescription} />
-      <meta name="twitter:image" content={image} />
+      <meta name="twitter:image" content={imageUrl} />
     </Helmet>
   );
 };

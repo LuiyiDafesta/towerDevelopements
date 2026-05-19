@@ -143,12 +143,8 @@ const LeadCapture = ({ onComplete }: LeadCaptureProps) => {
       {/* Left Column: Marketing & Info */}
       <div className="w-full md:w-1/2 bg-neutral-900 p-8 md:p-16 flex flex-col justify-center items-center text-center border-b md:border-b-0 md:border-r border-gold/20">
         <div className="max-w-md mx-auto">
-          <div className="flex flex-col items-center gap-4 mb-10">
-            <img src="/logo.png" alt="Tower Developers" className="w-16 h-16 object-contain rounded-xl border border-white/10 shadow-xl" />
-            <div className="flex items-center gap-2.5">
-              <span className="text-3xl font-serif font-bold text-primary tracking-wide">Tower</span>
-              <span className="text-3xl font-serif font-light text-white tracking-wide">Developers</span>
-            </div>
+          <div className="flex flex-col items-center mb-10">
+            <img src="/logo.png" alt="Tower Developers" className="h-20 w-auto object-contain" />
           </div>
 
           <h2 className="text-primary text-sm font-medium tracking-[0.3em] uppercase mb-6">

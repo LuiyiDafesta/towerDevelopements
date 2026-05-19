@@ -16,12 +16,8 @@ const Navbar = () => {
     <nav className="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-md border-b border-white/5">
       <div className="container mx-auto px-4 md:px-8">
         <div className="flex items-center justify-between h-20">
-          <Link to="/" className="flex items-center gap-2.5">
-            <img src="/logo.png" alt="Tower Developers" className="w-14 h-14 object-contain rounded-md border border-white/5" />
-            <div className="flex flex-col -space-y-1">
-              <span className="text-lg font-serif font-bold text-primary tracking-wide">Tower</span>
-              <span className="text-lg font-serif font-light text-foreground tracking-wide">Developers</span>
-            </div>
+          <Link to="/" className="flex items-center">
+            <img src="/logo.png" alt="Tower Developers" className="h-12 w-auto object-contain" />
           </Link>
 
           {/* Desktop */}

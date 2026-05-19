@@ -22,10 +22,13 @@ const Footer = () => {
         </div>
 
         <div className="border-t border-border pt-8 flex flex-col md:flex-row items-center justify-between gap-8">
-          <div className="flex flex-col gap-4">
-            <div className="flex items-center gap-2">
-              <span className="text-xl font-serif font-bold text-primary">Tower</span>
-              <span className="text-xl font-serif font-light text-foreground">Developers</span>
+          <div className="flex flex-col gap-3">
+            <div className="flex items-center gap-2.5">
+              <img src="/logo.png" alt="Tower Developers" className="w-10 h-10 object-contain rounded-md border border-white/5" />
+              <div className="flex flex-col -space-y-1">
+                <span className="text-base font-serif font-bold text-primary tracking-wide">Tower</span>
+                <span className="text-base font-serif font-light text-foreground tracking-wide">Developers</span>
+              </div>
             </div>
             <div className="text-xs text-muted-foreground tracking-widest uppercase font-sans">
               Más de 25 años de experiencia

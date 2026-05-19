@@ -540,14 +540,14 @@ export default function PropertyForm() {
                 )}
               />
 
-            {/* Main Image Uploader */}
+              {/* Main Image Uploader */}
               <div className="md:col-span-2 space-y-4 pt-4 border-t border-gold/10">
                 <FormLabel className="text-gold uppercase text-xs tracking-widest font-bold flex items-center gap-2">
                   <ImageIcon className="w-4 h-4" /> Foto Principal
                 </FormLabel>
                 
                 {currentMainImageUrl && (
-                  <div className="relative group w-40 h-40 rounded-lg overflow-hidden border border-gold/20">
+                  <div className="relative group w-40 h-40 rounded-lg overflow-hidden border border-gold/20 bg-black/20">
                     <img src={currentMainImageUrl} alt="Principal" className="w-full h-full object-cover" />
                     <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity cursor-pointer">
                       <p className="text-[10px] text-white font-bold" onClick={() => setCurrentMainImageUrl(null)}>REEMPLAZAR</p>
@@ -555,7 +555,22 @@ export default function PropertyForm() {
                   </div>
                 )}
 
-                {!currentMainImageUrl && (
+                {!currentMainImageUrl && mainImageFile && (
+                  <div className="relative group w-40 h-40 rounded-lg overflow-hidden border border-gold/40 border-dashed bg-gold/5">
+                    <img 
+                      src={URL.createObjectURL(mainImageFile)} 
+                      alt="Nueva Principal" 
+                      className="w-full h-full object-cover"
+                      onLoad={(e) => URL.revokeObjectURL((e.target as HTMLImageElement).src)}
+                    />
+                    <div className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 flex flex-col justify-center items-center gap-1 transition-opacity cursor-pointer" onClick={() => setMainImageFile(null)}>
+                      <p className="text-[10px] text-white font-bold">REMOVER</p>
+                      <span className="text-[8px] text-white/60 truncate max-w-[90%] px-2">{mainImageFile.name}</span>
+                    </div>
+                  </div>
+                )}
+
+                {!currentMainImageUrl && !mainImageFile && (
                   <div className="relative group">
                     <input
                       type="file"
@@ -568,17 +583,10 @@ export default function PropertyForm() {
                       htmlFor="main-image-upload"
                       className="flex flex-col items-center justify-center border-2 border-dashed border-gold/20 rounded-xl p-8 hover:border-gold/40 hover:bg-gold/5 transition-all cursor-pointer"
                     >
-                      {mainImageFile ? (
-                        <div className="flex items-center gap-2 text-white">
-                          <CheckCircle2 className="w-5 h-5 text-gold" />
-                          <span className="font-semibold">{mainImageFile.name}</span>
-                        </div>
-                      ) : (
-                        <div className="flex flex-col items-center gap-2 text-white/40">
-                          <Upload className="w-8 h-8 mb-2" />
-                          <span className="text-sm font-medium uppercase tracking-tighter">Subir Foto Principal</span>
-                        </div>
-                      )}
+                      <div className="flex flex-col items-center gap-2 text-white/40">
+                        <Upload className="w-8 h-8 mb-2" />
+                        <span className="text-sm font-medium uppercase tracking-tighter">Subir Foto Principal</span>
+                      </div>
                     </label>
                   </div>
                 )}
@@ -593,7 +601,7 @@ export default function PropertyForm() {
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                   {/* Existing URLs */}
                   {currentGalleryUrls.map((url, idx) => (
-                    <div key={`existing-${idx}`} className="relative group h-32 rounded-lg overflow-hidden border border-gold/10">
+                    <div key={`existing-${idx}`} className="relative group h-32 rounded-lg overflow-hidden border border-gold/10 bg-black/20">
                       <img src={url} alt="Gallery item" className="w-full h-full object-cover" />
                       <button 
                         type="button"
@@ -607,17 +615,25 @@ export default function PropertyForm() {
                   
                   {/* New files being uploaded */}
                   {galleryFiles.map((file, idx) => (
-                    <div key={`new-${idx}`} className="relative group h-32 rounded-lg overflow-hidden border border-gold/40 border-dashed bg-gold/5">
-                      <div className="w-full h-full flex items-center justify-center text-[8px] text-gold p-2 text-center uppercase font-bold leading-none">
-                        {file.name}
+                    <div key={`new-${idx}`} className="relative group h-32 rounded-lg overflow-hidden border border-gold/40">
+                      <img 
+                        src={URL.createObjectURL(file)} 
+                        alt={file.name} 
+                        className="w-full h-full object-cover"
+                        onLoad={(e) => URL.revokeObjectURL((e.target as HTMLImageElement).src)}
+                      />
+                      <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex flex-col justify-between p-2 transition-opacity">
+                        <span className="text-[8px] text-white bg-black/70 px-1 py-0.5 rounded truncate self-start max-w-full">
+                          {file.name}
+                        </span>
+                        <button 
+                          type="button"
+                          onClick={() => removeGalleryFile(idx)}
+                          className="bg-red-500 rounded-full p-1 self-end hover:bg-red-600 transition-colors"
+                        >
+                          <X className="w-3 h-3 text-white" />
+                        </button>
                       </div>
-                      <button 
-                        type="button"
-                        onClick={() => removeGalleryFile(idx)}
-                        className="absolute top-1 right-1 bg-gold rounded-full p-1"
-                      >
-                        <X className="w-3 h-3 text-black" />
-                      </button>
                     </div>
                   ))}
 

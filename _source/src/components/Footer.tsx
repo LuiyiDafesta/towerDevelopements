@@ -2,7 +2,6 @@ import { Link } from "react-router-dom";
 import { Award, Clock, ShieldCheck } from "lucide-react";
 
 const badges = [
-  { icon: Award, label: "Mejor Desarrolladora 2024" },
   { icon: Clock, label: "Entrega en Tiempo" },
   { icon: ShieldCheck, label: "Inversión Segura" },
 ];
@@ -12,7 +11,7 @@ const Footer = () => {
     <footer className="bg-black border-t border-white/5">
       {/* Trust badges */}
       <div className="container mx-auto px-4 md:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
           {badges.map((badge) => (
             <div key={badge.label} className="flex items-center justify-center gap-3 text-muted-foreground">
               <badge.icon className="w-6 h-6 text-primary" />
@@ -42,7 +41,7 @@ const Footer = () => {
             </div>
             <div>
               <p className="text-[10px] uppercase font-bold tracking-[0.2em] text-white/40 mb-1">Email</p>
-              <a href="mailto:info@towerdevelopers.com" className="text-sm text-foreground hover:text-primary transition-colors">info@towerdevelopers.com</a>
+              <a href="mailto:contacto@towerdevelopers.com.ar" className="text-sm text-foreground hover:text-primary transition-colors">contacto@towerdevelopers.com.ar</a>
             </div>
           </div>
 

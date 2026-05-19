@@ -162,15 +162,15 @@ const LeadCapture = ({ onComplete }: LeadCaptureProps) => {
 
           <div className="grid grid-cols-2 gap-8 mb-12">
             <div className="p-6 border border-gold/20 rounded-xl bg-black/40 flex flex-col items-center">
-              <div className="text-4xl font-bold text-primary mb-2">24</div>
-              <p className="text-xs text-neutral-500 uppercase tracking-widest leading-tight">
-                Edificios entregados por los socios
+              <div className="text-4xl font-bold text-primary mb-2">+ 100</div>
+              <p className="text-xs text-neutral-500 uppercase tracking-widest leading-tight text-center">
+                proyectos completados
               </p>
             </div>
             <div className="p-6 border border-gold/20 rounded-xl bg-black/40 flex flex-col items-center">
-              <div className="text-4xl font-bold text-primary mb-2">1.791</div>
-              <p className="text-xs text-neutral-500 uppercase tracking-widest leading-tight">
-                Departamentos entregados en CABA
+              <div className="text-4xl font-bold text-primary mb-2">+ 1000</div>
+              <p className="text-xs text-neutral-500 uppercase tracking-widest leading-tight text-center">
+                unidades entregadas
               </p>
             </div>
           </div>

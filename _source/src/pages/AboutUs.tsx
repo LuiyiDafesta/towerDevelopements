@@ -5,8 +5,8 @@ import { Award, Building2, CheckCircle2, History, MapPin, Users2 } from "lucide-
 
 const stats = [
   { label: "Años de Trayectoria", value: "15+", icon: History },
-  { label: "Edificios Entregados", value: "24", icon: Building2 },
-  { label: "Departamentos en CABA", value: "1.791", icon: Award },
+  { label: "Proyectos Completados", value: "100+", icon: Building2 },
+  { label: "Unidades Entregadas", value: "1.000+", icon: Award },
   { label: "Clientes Satisfechos", value: "2.000+", icon: Users2 },
 ];
 
@@ -34,7 +34,7 @@ const AboutUs = () => {
     <div className="min-h-screen bg-black text-white font-sans">
       <SEO 
         title="Nuestra Empresa | Trayectoria y Excelencia" 
-        description="Conocé la historia de Tower Developers. Más de 15 años transformando el Real Estate de lujo en Buenos Aires con más de 1700 unidades entregadas."
+        description="Conocé la historia de Tower Developers. Más de 15 años transformando el Real Estate de lujo en Buenos Aires con más de 1000 unidades entregadas."
         image="/tower_about_us_hero_1774965024054.png"
       />
       <Navbar />

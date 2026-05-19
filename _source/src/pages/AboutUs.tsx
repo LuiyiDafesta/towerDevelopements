@@ -4,7 +4,7 @@ import SEO from "@/components/SEO";
 import { Award, Building2, CheckCircle2, History, MapPin, Users2 } from "lucide-react";
 
 const stats = [
-  { label: "Años de Trayectoria", value: "15+", icon: History },
+  { label: "Años de Trayectoria", value: "25+", icon: History },
   { label: "Proyectos Completados", value: "100+", icon: Building2 },
   { label: "Unidades Entregadas", value: "1.000+", icon: Award },
   { label: "Clientes Satisfechos", value: "2.000+", icon: Users2 },
@@ -34,7 +34,7 @@ const AboutUs = () => {
     <div className="min-h-screen bg-black text-white font-sans">
       <SEO 
         title="Nuestra Empresa | Trayectoria y Excelencia" 
-        description="Conocé la historia de Tower Developers. Más de 15 años transformando el Real Estate de lujo en Buenos Aires con más de 1000 unidades entregadas."
+        description="Conocé la historia de Tower Developers. Más de 25 años transformando el Real Estate de lujo en Buenos Aires con más de 1000 unidades entregadas."
         image="/tower_about_us_hero_1774965024054.png"
       />
       <Navbar />
@@ -91,7 +91,7 @@ const AboutUs = () => {
             <div className="space-y-4">
               <h3 className="text-primary text-xs font-black tracking-[0.4em] uppercase">Nuestra Historia</h3>
               <h2 className="text-4xl md:text-5xl font-serif font-bold leading-tight">
-                15 años transformando la <br /> <span className="text-primary">arquitectura urbana</span>
+                25 años transformando la <br /> <span className="text-primary">arquitectura urbana</span>
               </h2>
             </div>
             <div className="space-y-6 text-white/70 text-lg leading-relaxed font-light">

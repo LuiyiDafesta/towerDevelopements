@@ -12,7 +12,7 @@ const SEO = ({
   title, 
   description, 
   image = "/og-image.png", 
-  url = "https://towerdevelopers.com", 
+  url = "https://towerdevelopers.com.ar", 
   type = "website" 
 }: SEOProps) => {
   const siteTitle = "Tower Developers";
@@ -21,7 +21,7 @@ const SEO = ({
   const metaDescription = description || defaultDescription;
 
   // Asegurar que la URL de la imagen sea siempre absoluta para que WhatsApp la detecte correctamente
-  const imageUrl = image.startsWith("http") ? image : `https://towerdevelopers.com${image}`;
+  const imageUrl = image.startsWith("http") ? image : `https://towerdevelopers.com.ar${image}`;
 
   return (
     <Helmet>

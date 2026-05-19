@@ -4,6 +4,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { supabase } from "@/integrations/supabase/client";
+import { compressImage } from "@/utils/imageCompression";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -134,22 +136,43 @@ export default function PropertyForm() {
   };
 
   const uploadToStorage = async (file: File, folder: string) => {
-    const fileExt = file.name.split('.').pop();
+    let fileToUpload = file;
+    
+    // Si es una imagen, la comprimimos antes de subirla
+    if (file.type.startsWith('image/')) {
+      try {
+        fileToUpload = await compressImage(file);
+      } catch (compressError) {
+        console.error("Error al comprimir la imagen, se subirá la original:", compressError);
+      }
+    }
+
+    // Generamos un nombre único y extensión correcta
+    const fileExt = fileToUpload.type === 'image/jpeg' ? 'jpg' : fileToUpload.name.split('.').pop() || 'dat';
     const fileName = `${Math.random().toString(36).substring(2)}-${Date.now()}.${fileExt}`;
     const filePath = `${folder}/${fileName}`;
 
-    const { error: uploadError } = await supabase.storage
-      .from('property-files')
-      .upload(filePath, file);
+    // Creamos el FormData para enviar el archivo a la Edge Function
+    const formData = new FormData();
+    formData.append('file', fileToUpload);
+    formData.append('path', filePath);
 
-    if (uploadError) throw uploadError;
+    // Subimos a Backblaze B2 a través de la Edge Function en Supabase
+    const { data, error: uploadError } = await supabase.functions.invoke('upload-to-b2', {
+      body: formData,
+    });
 
-    const { data: { publicUrl } } = supabase.storage
-      .from('property-files')
-      .getPublicUrl(filePath);
+    if (uploadError) {
+      throw new Error(uploadError.message || "Error al subir el archivo a Backblaze B2 a través de la Edge Function.");
+    }
 
-    return publicUrl;
+    if (!data || !data.publicUrl) {
+      throw new Error("No se obtuvo una URL pública de respuesta para el archivo.");
+    }
+
+    return data.publicUrl;
   };
+
 
   const onSubmit = async (values: PropertyFormValues) => {
     setLoading(true);

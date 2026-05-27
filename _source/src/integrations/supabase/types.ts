@@ -35,6 +35,83 @@ export type Database = {
         }
         Relationships: []
       }
+      commercials: {
+        Row: {
+          amenities: string[] | null
+          bathrooms: number | null
+          contact_email: string | null
+          created_at: string
+          description: string | null
+          expenses: number | null
+          featured: boolean | null
+          id: string
+          image_url: string | null
+          images: string[] | null
+          location: string
+          neighborhood_id: string | null
+          parking: number | null
+          pdf_url: string | null
+          price: number
+          square_meters: number | null
+          status: string | null
+          title: string
+          type: string
+          whatsapp: string | null
+        }
+        Insert: {
+          amenities?: string[] | null
+          bathrooms?: number | null
+          contact_email?: string | null
+          created_at?: string
+          description?: string | null
+          expenses?: number | null
+          featured?: boolean | null
+          id?: string
+          image_url?: string | null
+          images?: string[] | null
+          location: string
+          neighborhood_id?: string | null
+          parking?: number | null
+          pdf_url?: string | null
+          price: number
+          square_meters?: number | null
+          status?: string | null
+          title: string
+          type: string
+          whatsapp?: string | null
+        }
+        Update: {
+          amenities?: string[] | null
+          bathrooms?: number | null
+          contact_email?: string | null
+          created_at?: string
+          description?: string | null
+          expenses?: number | null
+          featured?: boolean | null
+          id?: string
+          image_url?: string | null
+          images?: string[] | null
+          location?: string
+          neighborhood_id?: string | null
+          parking?: number | null
+          pdf_url?: string | null
+          price?: number
+          square_meters?: number | null
+          status?: string | null
+          title?: string
+          type?: string
+          whatsapp?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "commercials_neighborhood_id_fkey"
+            columns: ["neighborhood_id"]
+            isOneToOne: false
+            referencedRelation: "neighborhoods"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       inquiries: {
         Row: {
           created_at: string | null
@@ -248,7 +325,7 @@ export type Database = {
           project_name?: string | null
           square_meters?: number | null
           status?: Database["public"]["Enums"]["property_status"] | null
-          title: string
+          title?: string
           whatsapp?: string | null
         }
         Relationships: [

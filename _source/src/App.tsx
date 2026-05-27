@@ -24,6 +24,12 @@ import LeadCapture from "./components/LeadCapture.tsx";
 import WhatsAppButton from "./components/WhatsAppButton";
 import MarketingTracker from "./components/MarketingTracker";
 
+// New Commercial routes
+import Commercials from "./pages/Commercials.tsx";
+import CommercialDetail from "./pages/CommercialDetail.tsx";
+import AdminCommercials from "./pages/admin/Commercials.tsx";
+import CommercialForm from "./pages/admin/CommercialForm.tsx";
+
 const queryClient = new QueryClient();
 
 const App = () => {
@@ -62,6 +68,8 @@ const App = () => {
                   <Route path="/" element={<Index />} />
                   <Route path="/propiedades" element={<Properties />} />
                   <Route path="/propiedades/:id" element={<PropertyDetail />} />
+                  <Route path="/comerciales" element={<Commercials />} />
+                  <Route path="/comerciales/:id" element={<CommercialDetail />} />
                   <Route path="/nosotros" element={<AboutUs />} />
                   <Route path="/legales" element={<Legal />} />
                   <Route path="/login" element={<Login />} />
@@ -74,6 +82,9 @@ const App = () => {
                     <Route path="propiedades" element={<AdminProperties />} />
                     <Route path="propiedades/nueva" element={<PropertyForm />} />
                     <Route path="propiedades/:id" element={<PropertyForm />} />
+                    <Route path="comerciales" element={<AdminCommercials />} />
+                    <Route path="comerciales/nueva" element={<CommercialForm />} />
+                    <Route path="comerciales/:id" element={<CommercialForm />} />
                     <Route path="barrios" element={<AdminNeighborhoods />} />
                     <Route path="configuracion" element={<AdminSettings />} />
                   </Route>

@@ -10,6 +10,7 @@ const Navbar = () => {
   const links = [
     { href: "/", label: "Inicio" },
     { href: "/nosotros", label: "Nuestra Empresa" },
+    { href: "/comerciales", label: "Comerciales" },
   ];
 
   return (
